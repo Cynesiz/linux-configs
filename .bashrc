@@ -44,7 +44,7 @@ fi
 
 if [ -f /usr/bin/screen ]; then
    if [ -z "$STY" ]; then screen -R; fi
-if
+fi
 
 #-------------------------------------------------------------
 # Bash History Auto-Completion
