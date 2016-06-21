@@ -38,6 +38,14 @@ if [ -f /etc/bashrc ]; then
       . /etc/bashrc   # --> Read /etc/bashrc, if present.
 fi
 
+#------------------------------------------------------------
+# Auto-Start Screen if available
+#------------------------------------------------------------
+
+if [ -f /usr/bin/screen ]; then
+   if [ -z "$STY" ]; then screen -R; fi
+if
+
 #-------------------------------------------------------------
 # Bash History Auto-Completion
 #-------------------------------------------------------------
