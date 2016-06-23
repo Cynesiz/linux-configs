@@ -17,6 +17,8 @@ HISTIGNORE="&:bg:fg:ll:h"
 HISTTIMEFORMAT="$(echo -e ${BCyan})[%d/%m %H:%M:%S]$(echo -e ${NC}) "
 HOSTFILE=$HOME/.hosts    # Put a list of remote hosts in ~/.hosts
 
+export LANG=en_US.UTF-8
+
 # don't put duplicate lines or lines starting with space in the history.
 HISTCONTROL=ignoreboth:erasedups
 
@@ -42,9 +44,9 @@ fi
 # Auto-Start Screen if available
 #------------------------------------------------------------
 
-if [ -f /usr/bin/screen ]; then
-   if [ -z "$STY" ]; then screen -R; fi
-fi
+#if [ -f /usr/bin/screen ]; then
+#   if [ -z "$STY" ]; then screen -R; fi
+#fi
 
 #-------------------------------------------------------------
 # Bash History Auto-Completion
@@ -472,6 +474,87 @@ alias installsrc='apt-build install'
 alias intsall='install'
 alias intsallsrc='installsrc'
 alias back='cd ..'
+alias grep='grep --color=auto --binary-files=without-match --devices=skip'
+
+
+#------------------------------------------------------------------------
+# Other Useful Functions
+#------------------------------------------------------------------------
+
+function cdroot()
+{
+  while [[ $PWD != '/' && ${PWD##*/} != 'httpdocs' ]]; do cd ..; done
+}
+
+upto ()
+{
+    if [ -z "$1" ]; then
+        return
+    fi
+    local upto=$1
+    cd "${PWD/\/$upto\/*//$upto}"
+}
+
+_upto()
+{
+    local cur=${COMP_WORDS[COMP_CWORD]}
+    local d=${PWD//\//\ }
+    COMPREPLY=( $( compgen -W "$d" -- "$cur" ) )
+}
+complete -F _upto upto
+
+jd(){
+    if [ -z "$1" ]; then
+        echo "Usage: jd [directory]";
+        return 1
+    else
+        cd **"/$1"
+    fi
+}
+
+
+# make a directory and cd to it
+mcd()
+{
+    test -d "$1" || mkdir "$1" && cd "$1"
+}
+
+# (c) 2007 stefan w. GPLv3          
+function up {
+ups=""
+for i in $(seq 1 $1)
+do
+        ups=$ups"../"
+done
+cd $ups
+}
+
+#netinfo - shows network information for your system
+netinfo ()
+{
+echo "--------------- Network Information ---------------"
+/sbin/ifconfig | awk /'inet addr/ {print $2}'
+/sbin/ifconfig | awk /'Bcast/ {print $3}'
+/sbin/ifconfig | awk /'inet addr/ {print $4}'
+/sbin/ifconfig | awk /'HWaddr/ {print $4,$5}'
+myip=`lynx -dump -hiddenlinks=ignore -nolist http://checkip.dyndns.org:8245/ | sed '/^$/d; s/^[ ]*//g; s/[ ]*$//g' `
+echo "${myip}"
+echo "---------------------------------------------------"
+}
+
+#dirsize - finds directory sizes and lists them for the current directory
+dirsize ()
+{
+du -shx * .[a-zA-Z0-9_]* 2> /dev/null | \
+egrep '^ *[0-9.]*[MG]' | sort -n > /tmp/list
+egrep '^ *[0-9.]*M' /tmp/list
+egrep '^ *[0-9.]*G' /tmp/list
+rm -rf /tmp/list
+}
+
+
+
+
 
 # Local Variables:
 # mode:shell-script
