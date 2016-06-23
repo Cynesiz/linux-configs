@@ -32,6 +32,30 @@ HISTFILESIZE=2000
 # check the window size/update
 shopt -s checkwinsize
 
+iamwho=$(whoami)
+
+#------------------------------------------------------------
+# Update this file to the latest version
+#------------------------------------------------------------
+
+function updbashrc() {
+wget https://raw.githubusercontent.com/Riemannian/linux-customizations/master/.bashrc -O /tmp/${iamwho}_bashrc
+if [ $? -gt 0 ]; then
+    echo "ERROR Fetching File, can't update!"
+else
+   if [ ! -d ~/.old-bashrc ]; then
+     mkdir ~/.old-bashrc
+   fi
+   today=`date '+%Y_%m_%d__%H_%M_%S'`;
+   mv ~/.bashrc ~/.old-bashrc/.bashrc_${today}
+   mv /tmp/${iamwho}_bashrc ~/.bashrc
+   . ~/.bashrc
+fi
+}
+
+
+
+
 #-------------------------------------------------------------
 # Source global definitions (if any)
 #-------------------------------------------------------------
