@@ -47,7 +47,7 @@ else
      mkdir ~/.old-bashrc
    fi
    today=`date '+%Y_%m_%d__%H_%M_%S'`;
-   mv ~/.bashrc ~/.old-bashrc/.bashrc_${today}
+   mv ~/.bashrc ~/.old-bashrc/${today}_bashrc
    mv /tmp/${iamwho}_bashrc ~/.bashrc
    . ~/.bashrc
 fi
