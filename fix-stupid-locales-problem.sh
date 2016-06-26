@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # One of these fucking commands will fix it!
+# Tested and working on debian :)
 
 sudo sh -c "echo 'LC_ALL=en_US.UTF-8\nLANG=en_US.UTF-8' >> /etc/environment"
 echo "export LANGUAGE=en_US.UTF-8
