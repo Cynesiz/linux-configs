@@ -93,21 +93,39 @@ UsePAM yes
 EOL
 iamwho=$(whoami)
 
+echo "Adding your user account.\n"
+sleep 1
+adduser --home /home/${myuser} --shell /bin/bash ${myuser}
+
 update-alternatives --config editor
 
-echo "Please add yourself to sudoers\n"
-sleep 5
-visudo
+#echo "Please add yourself to sudoers\n"
+#sleep 2
+#visudo
 
-ssh-keygen
+echo "${myuser} ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
-$skey=$(tail -1 ~/.ssh/id_rsa.pub)
-$hkey=$(cat ~/.ssh/id_rsa)
 
-echo $skey >> /etc/ssh/authorized_keys/$iamwho
-printf "%s\n" "Key added to authorized keys"
 
-printf "%s\n" "Please add this private key to your host keyring."
+runuser -u ${myuser} ssh-keygen -t rsa -b 4096 -f /tmp/...
+
+keybytes=$(stat -c%s "/tmp/...")
+pubbytes=$(stat -c%s "/tmp/....pub")
+
+$skey=$(cat /tmp/....pub)
+$hkey=$(cat /tmp/...)
+
+dd if=/dev/urandom of=/tmp/... bs=${hkey} count=3 conv=notrunc
+dd if=/dev/urandom of=/tmp/....pub bs=${hkey} count=3 conv=notrunc
+
+rm -rf -- /tmp/...
+rm -rf -- /tmp/....pub
+
+echo ${skey} >> /etc/ssh/authorized_keys/${myuser}
+printf "%s\n" "Key added to authorized keys:"
+printf "%s\n\n" ${skey}
+
+printf "%s\n" "Please add this private key to your client keyring."
 printf "\n%s\n" $hkey
 
 echo "Double check your config and then do service ssh restart to finish\n"
