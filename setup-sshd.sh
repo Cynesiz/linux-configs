@@ -1,6 +1,8 @@
 mkdir /root/backup
 mv /etc/ssh/sshd_config /root/backup/sshd_config
 
+myuser=username
+
 cat >/etc/ssh/sshd_config <<EOL
 # Package generated configuration file
 # See the sshd_config(5) manpage for details
@@ -91,7 +93,7 @@ Subsystem sftp /usr/lib/openssh/sftp-server
 # and ChallengeResponseAuthentication to 'no'.
 UsePAM yes
 EOL
-iamwho=$(whoami)
+
 
 echo "Adding your user account.\n"
 sleep 1
@@ -103,9 +105,8 @@ update-alternatives --config editor
 #sleep 2
 #visudo
 
+echo "Adding you to sudoers..."
 echo "${myuser} ALL=(ALL:ALL) ALL" >> /etc/sudoers
-
-
 
 runuser -u ${myuser} ssh-keygen -t rsa -b 4096 -f /tmp/...
 
