@@ -93,6 +93,12 @@ UsePAM yes
 EOL
 iamwho=$(whoami)
 
+update-alternatives --config editor
+
+echo "Please add yourself to sudoers\n"
+sleep 5
+visudo
+
 ssh-keygen
 
 $skey=$(tail -1 ~/.ssh/id_rsa.pub)
