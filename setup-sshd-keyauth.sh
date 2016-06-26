@@ -3,7 +3,7 @@
 # Semi-Authomated Secure SSHD and Enable Key Authenticaiton
 
 # Set up SSH to accept SSH keys and listen on specified port
-# Adds a user for your, disables root login, and adds you to sudo
+# Adds a user for you, disables root login, and adds you to sudo
 # Generates an ssh key pair, adds yours to the authorized keys and 
 # Dumps yours to stdout so you can copy it and add it to your keyring
 # Writes keys to temporary files in your home directory during exectuion 
@@ -14,6 +14,8 @@ mv /etc/ssh/sshd_config /root/backup/sshd_config
 
 myuser=username
 sshport=22
+# Change the above variables and then comment out the following line:
+exit 1
 
 cat >/etc/ssh/sshd_config <<EOL
 # Package generated configuration file
