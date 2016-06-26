@@ -1,14 +1,26 @@
+#!/bin/bash
+
+# Semi-Authomated Secure SSHD and Enable Key Authenticaiton
+
+# Set up SSH to accept SSH keys and listen on specified port
+# Adds a user for your, disables root login, and adds you to sudo
+# Generates an ssh key pair, adds yours to the authorized keys and 
+# Dumps yours to stdout so you can copy it and add it to your keyring
+# Writes keys to temporary files in your home directory during exectuion 
+# When done, it overwritess them 3 times with random data and then rm's them
+
 mkdir /root/backup
 mv /etc/ssh/sshd_config /root/backup/sshd_config
 
 myuser=username
+sshport=22
 
 cat >/etc/ssh/sshd_config <<EOL
 # Package generated configuration file
 # See the sshd_config(5) manpage for details
 
 # What ports, IPs and protocols we listen for
-Port 5555
+Port ${sshport}
 # Use these options to restrict which interfaces/protocols sshd will bind to
 #ListenAddress ::
 #ListenAddress 0.0.0.0
@@ -94,6 +106,7 @@ Subsystem sftp /usr/lib/openssh/sftp-server
 UsePAM yes
 EOL
 
+mkdir /etc/ssh/authorized_keys
 
 echo "Adding your user account.\n"
 sleep 1
@@ -101,33 +114,28 @@ adduser --home /home/${myuser} --shell /bin/bash ${myuser}
 
 update-alternatives --config editor
 
-#echo "Please add yourself to sudoers\n"
-#sleep 2
-#visudo
-
 echo "Adding you to sudoers..."
 echo "${myuser} ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
-runuser -u ${myuser} ssh-keygen -t rsa -b 4096 -f /tmp/...
+runuser --user ${myuser} -- ssh-keygen -t rsa -b 4096 -f /home/${myuser}/tmp
 
-keybytes=$(stat -c%s "/tmp/...")
-pubbytes=$(stat -c%s "/tmp/....pub")
+pubbytes=$(stat -c%s "/home/${myuser}/tmp.pub")
+keybytes=$(stat -c%s "/home/${myuser}/tmp")
 
-$skey=$(cat /tmp/....pub)
-$hkey=$(cat /tmp/...)
-
-dd if=/dev/urandom of=/tmp/... bs=${hkey} count=3 conv=notrunc
-dd if=/dev/urandom of=/tmp/....pub bs=${hkey} count=3 conv=notrunc
-
-rm -rf -- /tmp/...
-rm -rf -- /tmp/....pub
+skey=$(cat /home/${myuser}/tmp.pub)
 
 echo ${skey} >> /etc/ssh/authorized_keys/${myuser}
+
 printf "%s\n" "Key added to authorized keys:"
-printf "%s\n\n" ${skey}
 
-printf "%s\n" "Please add this private key to your client keyring."
-printf "\n%s\n" $hkey
+printf "%s\n\n" "Please add this private key to your client keyring."
+cat /home/${myuser}/tmp
 
-echo "Double check your config and then do service ssh restart to finish\n"
+dd if=/dev/urandom of=/home/${myuser}/tmp.pub bs=${pubbytes} count=3 conv=notrunc
+dd if=/dev/urandom of=/home/${myuser}/tmp bs=${keybytes} count=3 conv=notrunc
+
+rm -rf -- /home/${myuser}/tmp.pub
+rm -rf -- /home/${myuser}/tmp
+
+echo "\nAll set.\nDouble check your config and then do: service ssh restart \n\n"
 exit 0
