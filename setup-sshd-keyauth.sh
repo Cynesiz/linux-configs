@@ -15,7 +15,7 @@ mv /etc/ssh/sshd_config /root/backup/sshd_config
 myuser=username
 sshport=22
 # Change the above variables and then comment out the following line:
-exit 1
+echo "You need to edit the script config first!";exit 1
 
 cat >/etc/ssh/sshd_config <<EOL
 # Package generated configuration file
