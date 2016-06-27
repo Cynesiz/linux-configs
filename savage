@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# chmod +x savage && sudo cp savage /usr/local/bin/
+
+printf "%b" "\n\e[30;48;5;31
+m Restarting Hiawatha \e[0m \n"
+echo -e "\n\e[40;38;5;31m Stopping service... \e[0m \n"
+service hiawatha stop
+echo -e "\n\e[40;38;5;31m Starting service... \e[0m \n"
+service hiawatha start
+echo -e "\n\e[40;38;5;31m Checking status... \e[0m \n"
+service hiawatha status
+
+
