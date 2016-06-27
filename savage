@@ -4,11 +4,13 @@
 
 printf "%b" "\n\e[30;48;5;31
 m Restarting Hiawatha \e[0m \n"
-echo -e "\n\e[40;38;5;31m Stopping service... \e[0m \n"
+printf "%b" "\n\e[40;38;5;31m Stopping service... \e[0m \n"
 service hiawatha stop
-echo -e "\n\e[40;38;5;31m Starting service... \e[0m \n"
+printf "%b" "\n\e[40;38;5;31m Starting service... \e[0m \n"
 service hiawatha start
-echo -e "\n\e[40;38;5;31m Checking status... \e[0m \n"
+printf "%b" "\n\e[40;38;5;31m Checking status... \e[0m \n"
 service hiawatha status
-
+printf "%b" "\n\e[40;38;5;31m Showing processes... \e[0m \n"
+ps aux | grep hiawatha
+exit 0
 
