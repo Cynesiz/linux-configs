@@ -57,3 +57,8 @@ else
 dochoice $1
 fi
 
+apt-get clean -y;
+apt-get autoclean -y;
+apt-get autoremove -y;
+
+exit 0
