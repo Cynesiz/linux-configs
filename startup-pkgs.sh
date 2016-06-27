@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PKGSERVER="git sudo nano iptraf htop nmap gnupg dnsutils iptables-persistent haveged rng-tools acpid apt-file bzip2 curl htop nmon ntp rsync slurm tcpdump unzip"
-STANDARD="git sudo nano iptraf htop nmap gnupg dnsutils iptables-persistent haveged rng-tools acpid apt-file bzip2 curl htop nmon ntp rsync slurm tcpdump unzip"
+PKGSTANDARD="git sudo nano iptraf htop nmap gnupg dnsutils iptables-persistent haveged rng-tools acpid apt-file bzip2 curl htop nmon ntp rsync slurm tcpdump unzip"
 PKGVIRTUAL="git sudo nano iptraf htop dnsutils acpid bzip2 unzip"
 
 function setup ()
@@ -16,7 +16,7 @@ elif [[ $1 == "virtual" ]]
 then
 apt-get -y install ${PKGVIRTUAL}
 else
-echo "Not choice given."
+echo "No choice given."
 fi
 }
 
