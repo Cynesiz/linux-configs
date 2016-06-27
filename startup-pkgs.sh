@@ -27,14 +27,24 @@ apt-get upgrade
 apt-get dist-upgrade
 }
 
-while true; do
-    read -p "Enter: Server, Standard or Virtual :  " choice
-    case $choice in
+function dochoice ()
+{
+    case $1 in
         [server]* ) update; setup server; break;;
         [standard]* ) update; setup standard; break;;
         [virtual]* ) update; setup virtual; break;;
         [quit]* ) exit;;
         * ) echo "Please enter server, standard, virtual or quit.";;
     esac
+}
+
+if [ $# -eq 0 ]
+then
+while true; do
+    read -p "Enter: Server, Standard or Virtual :  " choice
+    dochoice $choice
 done
+else
+dochoice $1
+fi
 
