@@ -1,7 +1,16 @@
 #!/bin/bash
 
+# Essential packages updater and installer
+#
+# Usage:
+# chmod +x essentials.sh
+# ./essentials <system type> (server, standard or virtual)
+# OR
+# ./essentials
+#
+
 PKGSERVER="git sudo nano iptraf htop nmap gnupg dnsutils iptables-persistent haveged rng-tools acpid apt-file bzip2 curl htop nmon ntp rsync slurm tcpdump unzip"
-PKGSTANDARD="git sudo nano iptraf htop nmap gnupg dnsutils iptables-persistent haveged rng-tools acpid apt-file bzip2 curl htop nmon ntp rsync slurm tcpdump unzip"
+PKGSTANDARD="git sudo nano iptraf htop gnupg dnsutils haveged rng-tools acpid bzip2 curl htop rsync tcpdump unzip"
 PKGVIRTUAL="git sudo nano iptraf htop dnsutils acpid bzip2 unzip"
 
 function setup ()
