@@ -28,8 +28,8 @@ apt-get dist-upgrade
 }
 
 while true; do
-    read -p "Enter: Server, Standard or Virtual" yn
-    case $yn in
+    read -p "Enter: Server, Standard or Virtual :  " choice
+    case $choice in
         [server]* ) update; setup server; break;;
         [standard]* ) update; setup standard; break;;
         [virtual]* ) update; setup virtual; break;;
