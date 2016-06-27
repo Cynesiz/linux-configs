@@ -136,8 +136,8 @@ cat /home/${myuser}/tmp
 dd if=/dev/urandom of=/home/${myuser}/tmp.pub bs=${pubbytes} count=3 conv=notrunc
 dd if=/dev/urandom of=/home/${myuser}/tmp bs=${keybytes} count=3 conv=notrunc
 
-rm -rf -- /home/${myuser}/tmp.pub
-rm -rf -- /home/${myuser}/tmp
+rm -rf /home/${myuser}/tmp.pub
+rm -rf /home/${myuser}/tmp
 
 echo "\nAll set.\nDouble check your config and then do: service ssh restart \n\n"
 exit 0
