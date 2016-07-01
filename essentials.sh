@@ -9,26 +9,6 @@
 # ./essentials
 #
 
-PKGSERVER="git sudo nano iptraf htop nmap gnupg dnsutils iptables-persistent haveged rng-tools acpid apt-file bzip2 curl htop nmon ntp rsync slurm tcpdump unzip"
-PKGSTANDARD="git sudo nano iptraf htop gnupg dnsutils haveged rng-tools acpid bzip2 curl htop rsync tcpdump unzip"
-PKGVIRTUAL="git sudo nano iptraf htop dnsutils acpid bzip2 unzip"
-
-function setup ()
-{
-if [[ $1 == "server" ]] 
-then
-apt-get -y install ${PKGSERVER}
-elif [[ $1 == "standard" ]] 
-then
-apt-get -y install ${PKGSTANDARD}
-elif [[ $1 == "virtual" ]] 
-then
-apt-get -y install ${PKGVIRTUAL}
-else
-echo "No choice given."
-fi
-}
-
 function update ()
 {
 apt-get update
@@ -36,26 +16,16 @@ apt-get upgrade
 apt-get dist-upgrade
 }
 
-function dochoice ()
-{
-    case $1 in
-        [server]* ) update; setup server; break;;
-        [standard]* ) update; setup standard; break;;
-        [virtual]* ) update; setup virtual; break;;
-        [quit]* ) exit;;
-        * ) echo "Please enter server, standard, virtual or quit.";;
-    esac
-}
-
-if [ $# -eq 0 ]
-then
 while true; do
-    read -p "Enter: Server, Standard or Virtual :  " choice
-    dochoice $choice
+    read -p "\n[?] Choose: server / standard / virtual / quit :  " choice
+    case $choice in
+        [server]* ) update; apt-get -y install "git sudo nano iptraf htop nmap gnupg dnsutils iptables-persistent haveged rng-tools acpid apt-file bzip2 curl htop nmon ntp rsync tcpdump unzip"; break;;
+        [standard]* ) update; apt-get -y install "git sudo nano iptraf htop gnupg dnsutils haveged rng-tools acpid bzip2 curl htop rsync tcpdump unzip"; break;;
+        [virtual]* ) update; apt-get -y install "git sudo nano iptraf htop dnsutils acpid unzip curl tcpdump rng-utils"; break;;
+        [quit]* ) exit;;
+        * ) read -p "\n[?] Choose: server / standard / virtual / quit :  " choice
+    esac
 done
-else
-dochoice $1
-fi
 
 apt-get clean -y;
 apt-get autoclean -y;
