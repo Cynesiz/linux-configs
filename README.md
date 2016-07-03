@@ -1,5 +1,5 @@
 # linux-customizations
-Configurations I reuse every time I set up a Linux box.
+Config scripts I find myself reusing on a daily basis.
 
 Work in progress, some code is untested, regularly updating. 
 
