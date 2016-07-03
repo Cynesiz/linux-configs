@@ -1,5 +1,5 @@
-# linux-customizations
-Config scripts I find myself reusing on a daily basis.
+# linux config scripts
+Scripted operations that I find myself reusing on a daily basis.
 
 Work in progress, some code is untested, regularly updating. 
 
