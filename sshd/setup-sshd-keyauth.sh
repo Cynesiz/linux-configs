@@ -1,3 +1,9 @@
+
+NOT FINISHED!!!
+Doesn't work!!!
+exit 1
+
+
 #!/bin/bash
 
 # Semi-Authomated Secure SSHD and Enable Key Authenticaiton
