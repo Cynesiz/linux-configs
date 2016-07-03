@@ -9,4 +9,5 @@ echo -e "\n\e[40;38;5;82m Starting service... \e[0m \n"
 service apache2 start
 echo -e "\n\e[40;38;5;82m Checking status... \e[0m \n"
 service apache2 status
-
+echo -e "\n\e[40;38;5;82m Processes: \e[0m \n"
+ps aux | grep apache
