@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Shortcut functions/alias for ssh-keygen
+# Tested and working 07/02/2016
 
 # Generate Host Keys
 
