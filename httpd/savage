@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# A-okay
 # chmod +x savage && sudo cp savage /usr/local/bin/
 
 printf "%b" "\n\e[30;48;5;31
