@@ -1,4 +1,5 @@
 #!/bin/bash
+# This one works
 # This script will help you to set Hiawatha Server.
 # Tested on Devuan 8 32/64bit. Debian Jessie supported as well.
 # Script author ZEROF <zerof at backbox dot org>
