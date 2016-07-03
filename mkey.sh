@@ -13,9 +13,11 @@ else
   printf "%b" "\n\e[30;48;5;82m Generating New Host ID Keys \e[0m \n" 
   printf "%b" "\n\e[40;38;5;82m Output Directory: /etc/ssh \e[0m \n"
   rm -rf /etc/ssh/ssh_host*
-  ssh-keygen -t ed25519 -f ssh_host_ed25519_key < /dev/null
-  ssh-keygen -t rsa -b 4096 -f ssh_host_rsa_key < /dev/null
+  sleep 2
+  ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key < /dev/null
+  ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key < /dev/null
   printf "%b" "\n\e[40;38;5;82m Executing: chmod 0600 /etc/ssh/ssh_host* \e[0m \n"
+  sleep 1
   chmod 0600 /etc/ssh/ssh_host*
   printf "%s" "Done!"
 fi
@@ -59,3 +61,4 @@ else
     fi
   fi
 fi
+
