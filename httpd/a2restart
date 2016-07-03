@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# This one is okay :)
 # chmod +x a2restart && sudo cp a2restart /usr/local/bin/
 
 printf "%b" "\n\e[30;48;5;82m Restarting Apache \e[0m \n"
