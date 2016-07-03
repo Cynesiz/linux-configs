@@ -7,12 +7,17 @@
 function hkeygen ()
 {
 if [[ $EUID -ne 0 ]]; then
-  echo "You must be a root user to generate host keys!" 2>&1
+  printf "%s" "You must be a root user to generate host keys!" 2>&1
   exit 1
 else
+  printf "%b" "\n\e[30;48;5;82m Generating New Host ID Keys \e[0m \n" 
+  printf "%b" "\n\e[40;38;5;82m Output Directory: /etc/ssh \e[0m \n"
   rm -rf /etc/ssh/ssh_host*
   ssh-keygen -t ed25519 -f ssh_host_ed25519_key < /dev/null
   ssh-keygen -t rsa -b 4096 -f ssh_host_rsa_key < /dev/null
+  printf "%b" "\n\e[40;38;5;82m Executing: chmod 0600 /etc/ssh/ssh_host* \e[0m \n"
+  chmod 0600 /etc/ssh/ssh_host*
+  printf "%s" "Done!"
 fi
 }
 
@@ -24,12 +29,14 @@ function ckeygen ()
   printf "%b" "\n\e[40;38;5;82m Output Directory: $(echo ~/.ssh) \e[0m \n"
   ssh-keygen -t ed25519 -f $(echo ~/.ssh/$1_ed25519)
   ssh-keygen -t rsa -b 4096 -f $(echo ~/.ssh/$1_rsa)
+  printf "%b" "\n\e[40;38;5;82m Executing: chmod -R 0600 $(echo ~/.ssh) \e[0m \n"
+  chmod -R 0600 $(echo ~/.ssh)
   printf "%b" "\n\e[40;38;5;82m Public keys are as follows... \e[0m \n"
   printf "%b" "\n\e[40;38;5;82m ED25519 \e[0m \n"
   cat $(echo ~/.ssh/$1_ed25519.pub)
   printf "%b" "\n\e[40;38;5;82m RSA4096 \e[0m \n"
   cat $(echo ~/.ssh/$1_rsa.pub)
-  echo "\n"
+  printf "b" "Process successful, exititing 0\n"
   exit 0
 }
 
@@ -37,7 +44,7 @@ function ckeygen ()
 
 if [ $# -eq 0 ]; 
 then
-    echo "Usage: $0 <host/client> <name (client only, optional)> "
+    printf "%s" "Usage: $0 <host/client> <name (client only, optional)> "
     exit 1
 else
   if [ $1 == 'host' ]; 
