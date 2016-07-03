@@ -1,3 +1,8 @@
+
+Script is broken, don't use!
+
+
+
 #!/bin/bash
 # LIMP Auto-Install Hacked together by Riemannian
 # This script will help you to set Hiawatha Server.
