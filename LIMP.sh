@@ -1,6 +1,6 @@
 
 Script is broken, don't use!
-
+exit 1
 
 
 #!/bin/bash
