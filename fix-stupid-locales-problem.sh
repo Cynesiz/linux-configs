@@ -1,27 +1,20 @@
 #!/bin/bash
 
-# One of these fucking commands will fix it!
-# Tested and working on debian :)
+# This shit is so annoying
 
 # Purge/Install Stuff
 sudo apt-get purge locales
 sudo apt-get install locales
 sudo apt-get install language-pack-en-base
-
-# Write stuff
-sudo sh -c "echo 'LC_ALL=en_US.UTF-8\nLANG=en_US.UTF-8' >> /etc/environment"
-sudo sh -c "LC_ALL=en_US.UTF-8" >> /etc/default/locale
-sudo sh -c "export LANGUAGE=\"en_US.UTF-8\"
-export LANG=\"en_US.UTF-8\"
-export LC_ALL=\"en_US.UTF-8\"">>~/.bash_profile
-echo "LANG=\"en_US.UTF-8\"\nLANGUAGE=\"en_US:en\"" >> ~/.profile
-source ~/.bash_profile
-source ~/.profile
-
+# Export stuff
+export LANGUAGE="en_US.UTF-8"
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
 # Configure stuff
-
+echo "AcceptEnv LANG LC_*" >> /etc/ssh/sshd_config
+service sshd restart
+# Configure the rest of the stuff
 sudo locale-gen "en_US.UTF-8"
-sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
-
+sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 
 sudo dpkg-reconfigure locales
 
