@@ -1,3 +1,7 @@
+
+Script is broken, don't use!
+exit 1
+
 #!/bin/bash
 
 # Quick install Nginx, Mariadb and PHP-fpm
