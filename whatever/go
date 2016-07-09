@@ -1,0 +1,37 @@
+#!/bin/bash
+
+mkdir /tmp/setup
+cd /tmp/setup
+
+wget https://gist.githubusercontent.com/shawnbon206/f7327c3f9d0d1a246a2f/raw/13065c0aefe38f7f78c3b6612e859c7587a3e52c/sources.list --quiet
+mv /etc/apt/sources.list /tmp/setup/sources.bak
+cat /tmp/setup/sources.list >> /etc/apt/sources.list
+
+apt-get update
+apt-get -y dist-upgrade
+apt-get -y upgrade
+
+wget https://github.com/Cynesiz/linux-configs/blob/master/home/.bashrc --quiet
+
+rm -rf /etc/bash.bashrc
+mv /tmp/setup/.bashrc /etc/bash.bashrc
+rm -rf ~/.bashrc
+source /etc/bash.bashrc
+
+wget https://raw.githubusercontent.com/Cynesiz/linux-configs/master/sledge-hammer-to-kill-a-fly/%20stupid-locales-problem.sh --quiet
+
+mv *stupid* stupid.sh
+chmod +x stupid.sh
+./stupid.sh
+
+apt-get -y install git sudo nano links iptraf htop dnsutils whois acpid unzip curl tcpdump ca-certificates; 
+
+apt-get clean -y;
+apt-get autoclean -y;
+apt-get autoremove -y;
+
+cd /root
+git clone https://github.com/Cynesiz/linux-configs
+cd /root/linux-configs
+
+exit 0
