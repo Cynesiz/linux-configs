@@ -11,20 +11,20 @@ apt-get update
 apt-get -y dist-upgrade
 apt-get -y upgrade
 
-wget https://github.com/Cynesiz/linux-configs/blob/master/home/.bashrc --quiet
+wget https://raw.githubusercontent.com/Cynesiz/linux-configs/master/home/.bashrc --quiet
 
 rm -rf /etc/bash.bashrc
 mv /tmp/setup/.bashrc /etc/bash.bashrc
 rm -rf ~/.bashrc
 source /etc/bash.bashrc
 
-wget https://raw.githubusercontent.com/Cynesiz/linux-configs/master/sledge-hammer-to-kill-a-fly/%20stupid-locales-problem.sh --quiet
+wget -O /tmp/setup/stupid https://raw.githubusercontent.com/Cynesiz/linux-configs/master/sledge-hammer-to-kill-a-fly/%20stupid-locales-problem.sh --quiet
 
-mv *stupid* stupid.sh
-chmod +x stupid.sh
-./stupid.sh
+chmod +x /tmp/setup/stupid
+cd /tmp/setup
+./stuipd
 
-apt-get -y install git sudo nano links iptraf htop dnsutils whois acpid unzip curl tcpdump ca-certificates; 
+apt-get -y install git udhcpc sudo nano links iptraf htop dnsutils whois acpid unzip curl tcpdump ca-certificates; 
 
 apt-get clean -y;
 apt-get autoclean -y;
@@ -34,4 +34,16 @@ cd /root
 git clone https://github.com/Cynesiz/linux-configs
 cd /root/linux-configs
 
+chmod -R +x /root/linux-configs/httpd
+cp /root/linux-configs/httpd/a2restart /usr/local/bin/
+cp /root/linux-configs/httpd/savage /usr/local/bin/
+cp /root/linux-configs/httpd/ngxrestart /usr/local/bin/
+
+chmod -R 0750 /sbin
+chmod -R 0750 /usr/sbin
+chmod -R 0750 /usr/bin
+
+echo "\n\n\nGO!!!!!\n\n\n\"
+
+reboot
 exit 0
