@@ -1,0 +1,13 @@
+#!/bin/bash
+# This one is okay :)
+# chmod +x ngxrestart && sudo cp ngxrestart /usr/local/bin/
+
+printf "%b" "\n\e[30;48;5;82m Restarting NGinx \e[0m \n"
+echo -e "\n\e[40;38;5;82m Stopping service... \e[0m \n"
+service nginx stop
+echo -e "\n\e[40;38;5;82m Starting service... \e[0m \n"
+service nginx start
+echo -e "\n\e[40;38;5;82m Checking status... \e[0m \n"
+service nginx status
+echo -e "\n\e[40;38;5;82m Processes: \e[0m \n"
+ps aux | grep nginx
