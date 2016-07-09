@@ -43,7 +43,4 @@ chmod -R 0750 /sbin
 chmod -R 0750 /usr/sbin
 chmod -R 0750 /usr/bin
 
-echo "\n\n\nGO!!!!!\n\n\n"
-
 reboot
-exit 0
