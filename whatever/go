@@ -1,9 +1,9 @@
 #!/bin/bash
-
+# Just settings up some disposable vms real quick
 mkdir /tmp/setup
 cd /tmp/setup
 
-wget https://gist.githubusercontent.com/shawnbon206/f7327c3f9d0d1a246a2f/raw/13065c0aefe38f7f78c3b6612e859c7587a3e52c/sources.list --quiet
+wget https://gist.githubusercontent.com/shawnbon206/f7327c3f9d0d1a246a2f/raw/13065c0aefe38f7f78c3b6612e859c7587a3e52c/sources.list --no-check-certificate
 mv /etc/apt/sources.list /tmp/setup/sources.bak
 cat /tmp/setup/sources.list >> /etc/apt/sources.list
 
@@ -11,14 +11,14 @@ apt-get update
 apt-get -y dist-upgrade
 apt-get -y upgrade
 
-wget https://raw.githubusercontent.com/Cynesiz/linux-configs/master/home/.bashrc --quiet
+wget https://raw.githubusercontent.com/Cynesiz/linux-configs/master/home/.bashrc  --no-check-certificate
 
 rm -rf /etc/bash.bashrc
 mv /tmp/setup/.bashrc /etc/bash.bashrc
 rm -rf ~/.bashrc
 source /etc/bash.bashrc
 
-wget -O /tmp/setup/stupid https://raw.githubusercontent.com/Cynesiz/linux-configs/master/sledge-hammer-to-kill-a-fly/%20stupid-locales-problem.sh --quiet
+wget -O /tmp/setup/stupid https://raw.githubusercontent.com/Cynesiz/linux-configs/master/sledge-hammer-to-kill-a-fly/%20stupid-locales-problem.sh  --no-check-certificate
 
 chmod +x /tmp/setup/stupid
 cd /tmp/setup
@@ -43,4 +43,11 @@ chmod -R 0750 /sbin
 chmod -R 0750 /usr/sbin
 chmod -R 0750 /usr/bin
 
-reboot
+read -n1 -r -p "Press enter to reboot or space to return to a shell..." key
+
+if [ "$key" = '' ]; then
+    exit 0
+else
+   reboot
+fi
+
