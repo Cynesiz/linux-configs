@@ -35,6 +35,7 @@ pubkey="ssh-rsa publickeyDJFUWwuldk you@whatever"
 homedir="/home/${user}"
 pass=$(randalphnum 20)
 sshport=$(randnumb 4)
+rootpass=$(randalphnum 20)
 sshipv4=$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
 
 #suicide="1"
@@ -153,12 +154,16 @@ mount –-bind /log/$HOSTNAME /var/log
 mount –-make-unbindable /log/$HOSTNAME
 mount –-make-shared /log/$HOSTNAME
 
-printf "%b" "\n\n--------------------- COMPLETED -------------------------\n"
-printf "%b" "User: ${user} \n"
-printf "%b" "Password: $pass \n"
-printf "%b" "Home Directory: $homedir \n"
+printf "%b" "\n\n--------------------- CONFIGURATION -------------------------\n"
 printf "%b" "SSH Port: $sshport \n"
 printf "%b" "SSH IP: $sshipv4 \n"
+echo " "
+printf "%b" "Home Directory: $homedir \n"
+printf "%b" "User: ${user} \n"
+printf "%b" "Generated Password for ${user}: $pass \n"
+passwd ${user}
+printf "%b" "Gererated Password for root: $rootpass \n"
+passwd root
 printf "%b" "--------------------- COMPLETED -------------------------\n\n"
 
 exit 0
