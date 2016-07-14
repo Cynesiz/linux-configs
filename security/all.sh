@@ -1,18 +1,32 @@
 #!/bin/sh
 # Routine for virtual machines 
-
+function randalph() 
+{
+len=$1
+if [ -z "$1" ] || len=16
+echo $(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w $1 | head -n 1)
+}
+function randnumb() 
+{
+len=$1
+if [ -z "$1" ] || len=16
+echo $(cat /dev/urandom | tr -dc '0-9' | fold -w $1 | head -n 1)
+}
+function randalphnum() 
+{
+len=$1
+if [ -z "$1" ] || len=16
+echo $(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w $1 | head -n 1)
+}
 user="user"
-pass=$(uuidgen)
-cpass=$(perl -e 'printf("%s\n", crypt($ARGV[0], "password"))' "$pass")
 pubkey="pubkey"
-sshport="666"
-suicide="1"
+$homedir="/home/$user"
+pass=$(randalphnum 20)
+cpass=$(perl -e 'printf("%s\n", crypt($ARGV[0], "password"))' "$pass")
+sshport=$(randnumb 4)
+#suicide="1"
 
-if [ $user == "user" ]
-then
-printf "%b" "You forgot to edit the variables!"
-exit 1
-fi
+if [ $user == "user" ] && printf "%b" "You forgot to edit the variables!"
 
 printf "%b" "\ntmpfs /dev/shm tmpfs defaults,ro 0 0 \n" >> /etc/fstab
 
@@ -53,11 +67,8 @@ apt-get -y upgrade --show-upgraded
 apt-get -y purge postfix
 /usr/sbin/update-rc.d ntp disable
 apt-get -y purge ntp
-
-
 apt-get -y install sudo
 apt-get -y install ipset
-apt-get -y install ip6tables
 apt-get -y install fail2ban
 apt-get -y install gnupg2
 apt-get -y install nano 
@@ -69,8 +80,8 @@ apt-get -y install acpid
 apt-get -y install unzip 
 apt-get -y install tcpdump
 apt-get -y install ca-certificates
-apt-get -y install --no-install-recommends checksecurity
-apt-get -y install --no-install-recommends chkrootkit
+#apt-get -y install --no-install-recommends checksecurity
+#apt-get -y install --no-install-recommends chkrootkit
 # specialty purpose
 apt-get -y install sshfs
 
@@ -82,8 +93,8 @@ chmod 0700 /etc/ssh/authorized_keys
 chmod 0400 /etc/ssh/authorized_keys/$user
 
 useradd -b /home -m -g admin -p $cpass -s /bin/sh $user
-chmod -R 0700 /home/$user
-chown -R $user:user /home/$user
+chmod -R 0700 $homedir
+chown -R $user:user $homedir
 
 cat >>/etc/sudoers <<EOL
 $user  ALL=(ALL) ALL
@@ -91,17 +102,17 @@ EOL
 
 mv /etc/ssh/sshd_Config /tmp/bkup
 touch /etc/ssh/sshd_config
-printf "%b" "\nPort $sshport\n\nListenAddress 0.0.0.0\n\nKexAlgorithms curve25519-sha256@libssh.org\n\nCiphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr\n\nMACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com\n\nProtocol 2\n\nHostKey /etc/ssh/ssh_host_ed25519_key\n\nHostKey /etc/ssh/ssh_host_rsa_key\n\n\n# Optional restriction:\n\n# AllowUsers \nAllowUsers $user \n\n# AllowGroups \nAllowGroups admin\n\n#Privilege Separation is turned on for security\nUsePrivilegeSeparation yes\n\n# Lifetime and size of ephemeral version 1 server key\nKeyRegenerationInterval 1800\nServerKeyBits 2048\n\n# Logging\nSyslogFacility AUTH\nLogLevel INFO\n\n# Authentication:\n\nPubkeyAuthentication yes\nAuthorizedKeysFile	/etc/ssh/authorized_keys/%u\n\nPasswordAuthentication no\nLoginGraceTime 120\nPermitRootLogin no\nStrictModes yes\nIgnoreRhosts yes\nRhostsRSAAuthentication no\nHostbasedAuthentication no\nIgnoreUserKnownHosts yes\nPermitEmptyPasswords no\nChallengeResponseAuthentication no\nPasswordAuthentication no\nKerberosAuthentication no\nKerberosGetAFSToken no\nKerberosOrLocalPasswd no\nKerberosTicketCleanup no\nGSSAPIAuthentication no\nGSSAPICleanupCredentials no\nX11Forwarding no\nX11DisplayOffset 10\nPrintMotd no\nPrintLastLog yes\nTCPKeepAlive yes\nUseLogin no\nUsePAM no\n\nAcceptEnv LANG LC_*\n\n#MaxStartups 10:30:60\n#Banner /etc/issue.net\n\nSubsystem sftp /usr/lib/openssh/sftp-server\n" >> /etc/ssh/sshd_config
+printf "%b" "\nPort $sshport\n\nListenAddress 0.0.0.0\n\nKexAlgorithms curve25519-sha256@libssh.org\n\nCiphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr\n\nMACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com\n\nProtocol 2\n\nHostKey /etc/ssh/ssh_host_ed25519_key\n\nHostKey /etc/ssh/ssh_host_rsa_key\n\n\n# Optional restriction:\n\n# AllowUsers \nAllowUsers $user \n\n# AllowGroups \nAllowGroups admin\n\n#Privilege Separation is turned on for security\nUsePrivilegeSeparation yes\n\n# Lifetime and size of ephemeral version 1 server key\nKeyRegenerationInterval 1800\nServerKeyBits 2048\n\n# Logging\nSyslogFacility AUTH\nLogLevel INFO\n\n# Authentication:\n\nPubkeyAuthentication yes\nAuthorizedKeysFile	/etc/ssh/authorized_keys/%u\n\nPasswordAuthentication no\nLoginGraceTime 120\nPermitRootLogin no\nStrictModes yes\nIgnoreRhosts yes\nRhostsRSAAuthentication no\nHostbasedAuthentication no\nIgnoreUserKnownHosts yes\nPermitEmptyPasswords no\nChallengeResponseAuthentication no\nPasswordAuthentication no\nX11Forwarding no\nX11DisplayOffset 10\nPrintMotd no\nPrintLastLog yes\nTCPKeepAlive yes\nUseLogin no\nUsePAM no\n\nAcceptEnv LANG LC_*\n\n#MaxStartups 10:30:60\n#Banner /etc/issue.net\n\nSubsystem sftp /usr/lib/openssh/sftp-server\n" >> /etc/ssh/sshd_config
 
-rm -rf /etc/ssh/ssh_host_*key*
+mv /etc/ssh/ssh_host_*key* /tmp/bkup
 ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key < /dev/null
 ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key < /dev/null
 
 service sshd restart
 
-chmod -R 0750 /sbin
-chmod -R 0750 /bin
-chmod -R 0750 /usr/sbin
+chmod -R 750 /sbin
+chmod -R 750 /bin
+chmod -R 750 /usr/sbin
 chmod 700 /usr/bin/who
 chmod 700 /usr/bin/w
 chmod 700 /usr/bin/locate
@@ -117,10 +128,15 @@ chmod 04750 /bin/su
 
 mkdir /log
 mkdir /log/$HOSTNAME
-mount –bind /log/$HOSTNAME /var/log
+mount –-bind /log/$HOSTNAME /var/log
 mount –make-unbindable /log/$HOSTNAME
 mount –make-shared /log/$HOSTNAME
 
+printf "%b" "\n\n\n--------------------- COMPLETED -------------------------\n\n\n"
+printf "%b" "User: $user \n"
+printf "%b" "Password: $pass \n"
+printf "%b" "Home Directory: $homedir \n"
+printf "%b" "SSH Port: $sshport \n"
 
 
 
