@@ -34,7 +34,6 @@ user="user"
 pubkey="ssh-rsa publickeyDJFUWwuldk you@whatever"
 homedir="/home/${user}"
 pass=$(randalphnum 20)
-cpass=$(perl -e 'printf("%s\n", crypt($ARGV[0], "password"))' "${pass}")
 sshport=$(randnumb 4)
 sshipv4=$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
 
@@ -117,7 +116,7 @@ chmod 0400 /etc/ssh/authorized_keys/${user}
 
 
 groupadd admin
-useradd -d "${homdir}" -g admin -m -p "${cpass}" -s /bin/bash random
+useradd -d "${homdir}" -g admin -m -s /bin/bash "${user}""
 chmod -R 0700 "${homedir}"
 chown -R ${user}:admin "${homedir}"
 
@@ -135,9 +134,6 @@ ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key < /dev/null
 
 service sshd restart
 
-chmod -R 750 /sbin
-chmod -R 750 /bin
-chmod -R 750 /usr/sbin
 chmod 700 /usr/bin/who
 chmod 700 /usr/bin/w
 chmod 700 /usr/bin/locate
@@ -154,8 +150,8 @@ chmod 04750 /bin/su
 mkdir /log
 mkdir /log/$HOSTNAME
 mount –-bind /log/$HOSTNAME /var/log
-mount –make-unbindable /log/$HOSTNAME
-mount –make-shared /log/$HOSTNAME
+mount –-make-unbindable /log/$HOSTNAME
+mount –-make-shared /log/$HOSTNAME
 
 printf "%b" "\n\n--------------------- COMPLETED -------------------------\n"
 printf "%b" "User: ${user} \n"
