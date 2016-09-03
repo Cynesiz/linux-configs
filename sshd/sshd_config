@@ -1,54 +1,33 @@
 Port ${randport}
-
 ListenAddress ${inet4}
-
-KexAlgorithms curve25519-sha256@libssh.org
-
-Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
-
-MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com
-
 Protocol 2
 
 HostKey /etc/ssh/ssh_host_ed25519_key
 HostKey /etc/ssh/ssh_host_rsa_key
 
-# Optional group restriction:
-# AllowGroups groupname
-
-# Generate server keys:
-# cd /etc/ssh
-# rm ssh_host_*key*
-# ssh-keygen -t ed25519 -f ssh_host_ed25519_key < /dev/null
-# ssh-keygen -t rsa -b 4096 -f ssh_host_rsa_key < /dev/null
-
-#Privilege Separation is turned on for security
-UsePrivilegeSeparation yes
-
-# Lifetime and size of ephemeral version 1 server key
-KeyRegenerationInterval 1800
-ServerKeyBits 1024
-
-# Logging
-SyslogFacility AUTH
-LogLevel INFO
-
 # Authentication:
-
+LoginGraceTime 120
+PermitRootLogin no
+StrictModes yes
+ChallengeResponseAuthentication no
+PasswordAuthentication no
+PermitEmptyPasswords no
+RSAAuthentication yes
 PubkeyAuthentication yes
 AuthorizedKeysFile	/etc/ssh/authorized_keys/%u
 
-PasswordAuthentication no
-LoginGraceTime 30
-PermitRootLogin no
-StrictModes yes
+UsePrivilegeSeparation yes
+KeyRegenerationInterval 3600
+ServerKeyBits 1024
+SyslogFacility AUTH
+LogLevel INFO
+
 IgnoreRhosts yes
 RhostsRSAAuthentication no
 HostbasedAuthentication no
 IgnoreUserKnownHosts yes
-PermitEmptyPasswords no
-ChallengeResponseAuthentication no
-PasswordAuthentication no
+
+LoginGraceTime 30
 KerberosAuthentication no
 KerberosGetAFSToken no
 KerberosOrLocalPasswd no
@@ -62,10 +41,15 @@ PrintLastLog yes
 TCPKeepAlive yes
 UseLogin no
 UsePAM no
-
 AcceptEnv LANG LC_*
-
-#MaxStartups 10:30:60
-#Banner /etc/issue.net
-
 Subsystem sftp /usr/lib/openssh/sftp-server
+
+#KexAlgorithms curve25519-sha256@libssh.org
+#Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+#MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com
+
+# Generate server keys:
+# cd /etc/ssh
+# rm ssh_host_*key*
+# ssh-keygen -t ed25519 -f ssh_host_ed25519_key < /dev/null
+# ssh-keygen -t rsa -b 4096 -f ssh_host_rsa_key < /dev/null
