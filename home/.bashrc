@@ -1,16 +1,104 @@
-# =============================================================== #
-#
-# PERSONAL $HOME/.bashrc FILE for bash-3.0 (or later)
-# By Emmanuel Rouat [no-email]
-# Modified by Reimannian
-#
-# Last modified: Mon Jun 21, 2016 02:10:33 EST
-
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
       *) return;;
 esac
+
+#-------------------
+# Personnal Aliases
+#-------------------
+
+alias skype='nohup PULSE_PROP="filter.want=echo-cancel" skype &'
+
+function cd() {
+    new_directory="$*";
+    if [ $# -eq 0 ]; then 
+        new_directory=${HOME};
+    fi;
+    builtin cd "${new_directory}" && ls
+}
+
+alias ssgw='ssh 172.16.1.1'
+alias sswitch='ssh 172.16.1.5'
+alias sswifi='ssh 172.16.1.254'
+alias ssvirt='ssh 172.16.1.10'
+alias ssvpn='ssh 172.16.1.15'
+alias ssproxy='ssh 172.16.1.16'
+alias sskali='ssh 172.16.1.17'
+
+function getarp() {
+   ping -b -c 5 -n -i 0.2 -W1 172.16.1.255
+   arp -an
+}
+
+alias home='cd'
+alias cb='cd ..'
+alias rm='rm -rf'
+alias h='history'
+alias j='jobs -l'
+alias which='type -a'
+
+# Pretty-print of some PATH variables:
+alias path='echo -e ${PATH//:/\\n}'
+alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
+
+alias ilo='ssh -v -oKexAlgorithms=+diffie-hellman-group1-sha1 -oPubkeyAuthentication=no -oHostKeyAlgorithms=+ssh-dss $1@$2'
+
+alias myip='curl http://api.ipify.org && printf "%b" "\n\n"'
+
+function traceeroute() {
+    options="$*";
+    if [ $# -eq 0 ]; then 
+        options='--help';
+    fi;
+    builtin traceroute "${options}" '-w 3 -q 1 -N 32';
+}
+
+alias pingc='ping -n -i 0.2 -W1'
+alias pingq='ping -c 5 -n -i 0.2 -W1'
+alias tracert='traceroute'
+alias du='du -kh'    # Makes a more readable output.
+alias df='df -kTh'
+
+#-------------------------------------------------------------
+# Spelling typos - highly personnal and keyboard-dependent :-)
+#-------------------------------------------------------------
+
+alias xs='cd'
+alias vf='cd'
+alias moer='more'
+alias moew='more'
+alias kk='ll'
+alias nnao='nano'
+alias anno='nano'
+alias bashrc='nano ~/.bashrc && . ~/.bashrc'
+alias aptup='apt-get update && apt-get upgrade && apt-get dist-upgrade'
+alias install='apt-get install'
+alias installsrc='apt-build install'
+alias intsall='install'
+alias intsallsrc='installsrc'
+alias back='cd ..'
+alias grep='grep --color=auto --binary-files=without-match --devices=skip'
+
+
+
+#-------------------------------------------------------------
+# The 'ls' family (this assumes you use a recent GNU ls).
+#-------------------------------------------------------------
+# Add colors for filetype and  human-readable sizes by default on 'ls':
+alias ls='ls -lh --color'
+alias lx='ls -lXB'         #  Sort by extension.
+alias lk='ls -lSr'         #  Sort by size, biggest last.
+alias lt='ls -ltr'         #  Sort by date, most recent last.
+alias lc='ls -ltcr'        #  Sort by/show change time,most recent last.
+alias lu='ls -ltur'        #  Sort by/show access time,most recent last.
+
+# The ubiquitous 'll': directories first, with alphanumeric sorting:
+alias ll="ls -lv --group-directories-first"
+alias lm='ll |more'        #  Pipe through 'more'
+alias lr='ll -R'           #  Recursive ls.
+alias la='ll -A'           #  Show hidden files.
+alias tree='tree -Csuh'    #  Nice alternative to 'recursive ls' ...
 
 TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n'
 HISTIGNORE="&:bg:fg:ll:h"
@@ -39,7 +127,7 @@ iamwho=$(whoami)
 #------------------------------------------------------------
 
 function updbashrc() {
-wget https://raw.githubusercontent.com/Riemannian/linux-customizations/master/.bashrc -O /tmp/${iamwho}_bashrc
+wget https://raw.githubusercontent.com/Cynesiz/linux-configs/master/home/.bashrc -O /tmp/${iamwho}_bashrc
 if [ $? -gt 0 ]; then
     echo "ERROR Fetching File, can't update!"
 else
@@ -47,7 +135,7 @@ else
      mkdir ~/.old-bashrc
    fi
    today=`date '+%Y_%m_%d__%H_%M_%S'`;
-   mv ~/.bashrc ~/.old-bashrc/${today}_bashrc
+   mv ~/.bashrc ~/.old-bashrc/.bashrc_${today}
    mv /tmp/${iamwho}_bashrc ~/.bashrc
    . ~/.bashrc
 fi
@@ -63,6 +151,16 @@ fi
 if [ -f /etc/bashrc ]; then
       . /etc/bashrc   # --> Read /etc/bashrc, if present.
 fi
+
+#-------------------------------------------------------------
+# Source local definitions (if any)
+#-------------------------------------------------------------
+
+if [ -f ~/.bashrcext ]; then
+      source ~/.bashrcext   # --> Read if present.
+fi
+
+
 
 #------------------------------------------------------------
 # Auto-Start Screen if available
@@ -86,6 +184,10 @@ bind '"\eOB": history-search-forward'
 # Note: This is a BAD idea, use ssh keys instead!!!!
 # Requires sshpass
 #-------------------------------------------------------------
+
+
+alias indigo='ssh -p 5555 random@indigo.cynicalsystems.com'
+alias bbp='ssh -p 41227 random@5.104.117.112'
 
 # alias <hostname>='sshpass -p "SeCuR3P4S$w0rd!" ssh -o StrictHostKeyChecking=no root@pleasedonthack.me'
 # You didn't think I'd be dumb enough to store a cleartext ssh password on github, did you? ;)
@@ -406,56 +508,6 @@ PS1="\n\[\e[1;30m\][$$:$PPID - \j:\!\[\e[1;30m\]]\[\e[0;36m\] \T \[\e[1;30m\][\[
 
 
 
-#============================================================
-#
-#  ALIASES AND FUNCTIONS
-#
-#  Arguably, some functions defined here are quite big.
-#  If you want to make this file smaller, these functions can
-#+ be converted into scripts and removed from here.
-#
-#============================================================
-
-#-------------------
-# Personnal Aliases
-#-------------------
-
-alias rm='rm -i'
-alias cp='cp -i'
-alias mv='mv -i'
-# -> Prevents accidentally clobbering files.
-alias mkdir='mkdir -p'
-
-alias h='history'
-alias j='jobs -l'
-alias which='type -a'
-alias ..='cd ..'
-
-# Pretty-print of some PATH variables:
-alias path='echo -e ${PATH//:/\\n}'
-alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
-
-
-alias du='du -kh'    # Makes a more readable output.
-alias df='df -kTh'
-
-#-------------------------------------------------------------
-# The 'ls' family (this assumes you use a recent GNU ls).
-#-------------------------------------------------------------
-# Add colors for filetype and  human-readable sizes by default on 'ls':
-alias ls='ls -lah --color'
-alias lx='ls -lahXB'         #  Sort by extension.
-alias lk='ls -lahSr'         #  Sort by size, biggest last.
-alias lt='ls -lahtr'         #  Sort by date, most recent last.
-alias lc='ls -lahtcr'        #  Sort by/show change time,most recent last.
-alias lu='ls -lahtur'        #  Sort by/show access time,most recent last.
-
-# The ubiquitous 'll': directories first, with alphanumeric sorting:
-alias ll="ls -lahv --group-directories-first"
-alias lm='ll |more'        #  Pipe through 'more'
-alias lr='ll -R'           #  Recursive ls.
-alias la='ll -A'           #  Show hidden files.
-alias tree='tree -Csuh'    #  Nice alternative to 'recursive ls' ...
 
 
 #-------------------------------------------------------------
@@ -479,26 +531,6 @@ export LESS_TERMCAP_so=$'\E[01;44;33m'
 export LESS_TERMCAP_ue=$'\E[0m'
 export LESS_TERMCAP_us=$'\E[01;32m'
 
-
-#-------------------------------------------------------------
-# Spelling typos - highly personnal and keyboard-dependent :-)
-#-------------------------------------------------------------
-
-alias xs='cd'
-alias vf='cd'
-alias moer='more'
-alias moew='more'
-alias kk='ll'
-alias nnao='nano'
-alias anno='nano'
-alias bashrc='nano ~/.bashrc && . ~/.bashrc'
-alias aptup='apt-get update && apt-get upgrade && apt-get dist-upgrade'
-alias install='apt-get install'
-alias installsrc='apt-build install'
-alias intsall='install'
-alias intsallsrc='installsrc'
-alias back='cd ..'
-alias grep='grep --color=auto --binary-files=without-match --devices=skip'
 
 
 #------------------------------------------------------------------------
@@ -578,9 +610,3 @@ rm -rf /tmp/list
 
 
 
-
-
-# Local Variables:
-# mode:shell-script
-# sh-shell:bash
-# End:
