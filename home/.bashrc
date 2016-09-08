@@ -27,7 +27,7 @@ alias ssproxy='ssh 172.16.1.16'
 alias sskali='ssh 172.16.1.17'
 
 function getarp() {
-   ping -b -c 5 -n -i 0.2 -W1 172.16.1.255
+   ping -b -c 5 -n -W1 172.16.1.255
    arp -an
 }
 
