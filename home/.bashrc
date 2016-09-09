@@ -37,6 +37,7 @@ alias rm='rm -rf'
 alias h='history'
 alias j='jobs -l'
 alias which='type -a'
+alias calc="expr"
 
 # Pretty-print of some PATH variables:
 alias path='echo -e ${PATH//:/\\n}'
