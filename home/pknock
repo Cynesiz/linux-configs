@@ -1,0 +1,50 @@
+#!/bin/bash
+source ./confingi
+
+cfg.parser ~/.knockd/servers.ini
+
+
+function knockup () {
+cmd="cfg.section.$1"
+$cmd
+sendknocks
+
+#Host = $HOST
+#ADDR = $ADDR
+#PORT = $PORT
+#KNOCKS = $KNOCKS
+}
+
+function sendknocks() {
+
+local TYPE
+local KNOCKA
+
+echo $HOST $ADDR $KNOCKS
+
+for KNOCKA in $KNOCKS
+do
+
+declare -a KNOCK
+
+IFS='\/' read -a KNOCK <<< "$KNOCKA"
+
+echo ${ARRAY[*]}
+
+if [ "${KNOCK[0]}" == "t" ]
+then
+knock -v $ADDR ${KNOCK[1]}
+fi
+
+if [ "${KNOCK[0]}" == "u" ]
+then
+knock -uv $ADDR ${KNOCK[1]}
+fi
+
+done
+
+printf "\n%b\n" "Open Sesame..."
+
+ssh $ADDR -p $PORT
+
+}
