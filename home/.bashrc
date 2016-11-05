@@ -55,6 +55,10 @@ function traceeroute() {
     builtin traceroute "${options}" '-w 3 -q 1 -N 32';
 }
 
+function listening() {
+netstat -planu && netstat -plant
+}
+
 alias pingc='ping -n -i 0.2 -W1'
 alias pingq='ping -c 5 -n -i 0.2 -W1'
 alias tracert='traceroute'
