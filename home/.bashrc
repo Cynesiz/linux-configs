@@ -1,249 +1,21 @@
-# If not running interactively, don't do anything
 case $- in
     *i*) ;;
       *) return;;
 esac
-
-#-------------------
-# Personnal Aliases
-#-------------------
-
-alias skype='nohup PULSE_PROP="filter.want=echo-cancel" skype &'
-
-function cd() {
-    new_directory="$*";
-    if [ $# -eq 0 ]; then 
-        new_directory=${HOME};
-    fi;
-    builtin cd "${new_directory}" && ls
-}
-
-alias ssgw='ssh 172.16.1.1'
-alias sswitch='ssh 172.16.1.5'
-alias sswifi='ssh 172.16.1.254'
-alias ssvirt='ssh 172.16.1.10'
-alias ssvpn='ssh 172.16.1.15'
-alias ssproxy='ssh 172.16.1.16'
-alias sskali='ssh 172.16.1.17'
-
-function getarp() {
-   ping -b -c 5 -n 172.16.1.255
-   arp -an
-}
-
-alias home='cd'
-alias cb='cd ..'
-alias rm='rm -rf'
-alias h='history'
-alias j='jobs -l'
-alias which='type -a'
-alias calc="expr"
-
-# Pretty-print of some PATH variables:
-alias path='echo -e ${PATH//:/\\n}'
-alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
-
-alias ilo='ssh -v -oKexAlgorithms=+diffie-hellman-group1-sha1 -oPubkeyAuthentication=no -oHostKeyAlgorithms=+ssh-dss $1@$2'
-
-alias myip='curl http://api.ipify.org && printf "%b" "\n\n"'
-
-function traceeroute() {
-    options="$*";
-    if [ $# -eq 0 ]; then 
-        options='--help';
-    fi;
-    builtin traceroute "${options}" '-w 3 -q 1 -N 32';
-}
-
-function listening() {
-netstat -planu && netstat -plant
-}
-
-alias pingc='ping -n -i 0.2 -W1'
-alias pingq='ping -c 5 -n -i 0.2 -W1'
-alias tracert='traceroute'
-alias du='du -kh'    # Makes a more readable output.
-alias df='df -kTh'
-
-#-------------------------------------------------------------
-# Spelling typos - highly personnal and keyboard-dependent :-)
-#-------------------------------------------------------------
-
-alias xs='cd'
-alias vf='cd'
-alias moer='more'
-alias moew='more'
-alias kk='ll'
-alias nnao='nano'
-alias anno='nano'
-alias bashrc='nano ~/.bashrc && . ~/.bashrc'
-alias aptup='apt-get update && apt-get upgrade && apt-get dist-upgrade'
-alias install='apt-get install'
-alias installsrc='apt-build install'
-alias intsall='install'
-alias intsallsrc='installsrc'
-alias back='cd ..'
-alias grep='grep --color=auto --binary-files=without-match --devices=skip'
-
-
-
-#-------------------------------------------------------------
-# The 'ls' family (this assumes you use a recent GNU ls).
-#-------------------------------------------------------------
-# Add colors for filetype and  human-readable sizes by default on 'ls':
-alias ls='ls -lh --color'
-alias lx='ls -lXB'         #  Sort by extension.
-alias lk='ls -lSr'         #  Sort by size, biggest last.
-alias lt='ls -ltr'         #  Sort by date, most recent last.
-alias lc='ls -ltcr'        #  Sort by/show change time,most recent last.
-alias lu='ls -ltur'        #  Sort by/show access time,most recent last.
-
-# The ubiquitous 'll': directories first, with alphanumeric sorting:
-alias ll="ls -lv --group-directories-first"
-alias lm='ll |more'        #  Pipe through 'more'
-alias lr='ll -R'           #  Recursive ls.
-alias la='ll -A'           #  Show hidden files.
-alias tree='tree -Csuh'    #  Nice alternative to 'recursive ls' ...
-
-TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n'
-HISTIGNORE="&:bg:fg:ll:h"
-HISTTIMEFORMAT="$(echo -e ${BCyan})[%d/%m %H:%M:%S]$(echo -e ${NC}) "
-HOSTFILE=$HOME/.hosts    # Put a list of remote hosts in ~/.hosts
-
 export LANG=en_US.UTF-8
-
-# don't put duplicate lines or lines starting with space in the history.
-HISTCONTROL=ignoreboth:erasedups
-
-# append to the history file, don't overwrite it
-shopt -s histappend
-
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
-
-# check the window size/update
-shopt -s checkwinsize
-
-iamwho=$(whoami)
-
-#------------------------------------------------------------
-# Update this file to the latest version
-#------------------------------------------------------------
-
-function updbashrc() {
-wget https://raw.githubusercontent.com/Cynesiz/linux-configs/master/home/.bashrc -O /tmp/${iamwho}_bashrc
-if [ $? -gt 0 ]; then
-    echo "ERROR Fetching File, can't update!"
-else
-   if [ ! -d ~/.old-bashrc ]; then
-     mkdir ~/.old-bashrc
-   fi
-   today=`date '+%Y_%m_%d__%H_%M_%S'`;
-   mv ~/.bashrc ~/.old-bashrc/.bashrc_${today}
-   mv /tmp/${iamwho}_bashrc ~/.bashrc
-   . ~/.bashrc
-fi
-}
-
-
-
-
-#-------------------------------------------------------------
-# Source global definitions (if any)
-#-------------------------------------------------------------
-
 if [ -f /etc/bashrc ]; then
       . /etc/bashrc   # --> Read /etc/bashrc, if present.
 fi
-
-#-------------------------------------------------------------
-# Source local definitions (if any)
-#-------------------------------------------------------------
-
 if [ -f ~/.bashrcext ]; then
       source ~/.bashrcext   # --> Read if present.
 fi
 
-
-
-#------------------------------------------------------------
-# Auto-Start Screen if available
-#------------------------------------------------------------
-
-#if [ -f /usr/bin/screen ]; then
-#   if [ -z "$STY" ]; then screen -R; fi
-#fi
-
-#-------------------------------------------------------------
-# Bash History Auto-Completion
-#-------------------------------------------------------------
-
-bind '"\e[A": history-search-backward'
-bind '"\e[B": history-search-forward'
-bind '"\eOA": history-search-backward'
-bind '"\eOB": history-search-forward'
-
-#-------------------------------------------------------------
-# Quick SSH logins because lazy
-# Note: This is a BAD idea, use ssh keys instead!!!!
-# Requires sshpass
-#-------------------------------------------------------------
-
-
-alias indigo='ssh -p 5555 random@indigo.cynicalsystems.com'
-alias bbp='ssh -p 41227 random@5.104.117.112'
-
-# alias <hostname>='sshpass -p "SeCuR3P4S$w0rd!" ssh -o StrictHostKeyChecking=no root@pleasedonthack.me'
-# You didn't think I'd be dumb enough to store a cleartext ssh password on github, did you? ;)
-
-#--------------------------------------------------------------
-#  Automatic setting of $DISPLAY (if not set already).
-#--------------------------------------------------------------
-
-function get_xserver ()
-{
-    case $TERM in
-        xterm )
-            XSERVER=$(who am i | awk '{print $NF}' | tr -d ')''(' )
-            # Ane-Pieter Wieringa suggests the following alternative:
-            #  I_AM=$(who am i)
-            #  SERVER=${I_AM#*(}
-            #  SERVER=${SERVER%*)}
-            XSERVER=${XSERVER%%:*}
-            ;;
-            aterm | rxvt)
-            # Find some code that works here. ...
-            ;;
-    esac
-}
-
-if [ -z ${DISPLAY:=""} ]; then
-    get_xserver
-    if [[ -z ${XSERVER}  || ${XSERVER} == $(hostname) ||
-       ${XSERVER} == "unix" ]]; then
-          DISPLAY=":0.0"          # Display on local host.
-    else
-       DISPLAY=${XSERVER}:0.0     # Display on remote host.
-    fi
-fi
-
-export DISPLAY
-
-#-------------------------------------------------------------
-# Some settings
-#-------------------------------------------------------------
-
-#set -o nounset     # These  two options are useful for debugging.
-#set -o xtrace
 alias debug="set -o nounset; set -o xtrace"
-
 ulimit -S -c 0      # Don't want coredumps.
 set -o notify
 set -o noclobber
 set -o ignoreeof
 
-# Enable options:
 shopt -s cdspell
 shopt -s cdable_vars
 shopt -s checkhash
@@ -258,131 +30,169 @@ shopt -s extglob       # Necessary for programmable completion.
 shopt -u mailwarn
 unset MAILCHECK        # Don't want my shell to warn me of incoming mail.
 
-#-------------------------------------------------------------
-# Greeting, motd etc. ...
-#-------------------------------------------------------------
+function cd() {
+    new_directory="$*";
+    if [ $# -eq 0 ]; then 
+        new_directory=${HOME};
+    fi;
+    builtin cd "${new_directory}" && ls -lah
+}
+alias home='cd ~'
+alias cb='cd ..'
+alias rm='rm -rf'
+alias h='history'
+alias j='jobs -l'
+alias which='type -a'
+alias calc="expr"
+alias path='echo -e ${PATH//:/\\n}'
+alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
+alias myip='curl http://api.ipify.org && printf "%b" "\n\n"'
 
-# Normal Colors
-Black='\e[0;30m'        # Black
-Red='\e[0;31m'          # Red
-Green='\e[0;32m'        # Green
-Yellow='\e[0;33m'       # Yellow
-Blue='\e[0;34m'         # Blue
-Purple='\e[0;35m'       # Purple
-Cyan='\e[0;36m'         # Cyan
-White='\e[0;37m'        # White
+function trout() {
+    options="$*";
+    if [ $# -eq 0 ]; then 
+        options='--help';
+    fi;
+    builtin traceroute "${options}" '-w 3 -q 1 -N 32';
+}
 
+alias netall='ss -natup'
+alias netin='ss -pultan'
+alias netudp='ss -nap -A udp'
+alias nettcp='ss -nap -A tcp'
+alias pingc='ping -n -i 0.2 -W1'
+alias pingq='ping -c 5 -n -i 0.2 -W1'
+alias du='du -kh'    # Makes a more readable output.
+alias df='df -kTh'
+alias xs='cd'
+alias vf='cd'
+alias moer='more'
+alias moew='more'
+alias kk='ll'
+alias nnao='nano'
+alias anno='nano'
+alias bashrc='nano ~/.bashrc && . ~/.bashrc'
+alias aptup='apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y'
+alias install='sudo apt-get update && sudo apt-get install'
+alias installsrc='sudo apt-get update && sudo apt-build install'
+alias intsall='sudo apt-get update && sudo apt-get install'
+alias intsallsrc='sudo apt-get update && sudo apt-build install'
+alias back='cd ..'
+alias grep='grep --color=auto --binary-files=without-match --devices=skip'
+alias ls='ls -lh --color'
+alias lx='ls -lXB'         #  Sort by extension.
+alias lk='ls -lSr'         #  Sort by size, biggest last.
+alias lt='ls -ltr'         #  Sort by date, most recent last.
+alias lc='ls -ltcr'        #  Sort by/show change time,most recent last.
+alias lu='ls -ltur'        #  Sort by/show access time,most recent last.
+alias ll="ls -lv --group-directories-first"
+alias lm='ll |more'        #  Pipe through 'more'
+alias lr='ll -R'           #  Recursive ls.
+alias la='ll -A'           #  Show hidden files.
+alias tree='tree -Csuh'    #  Nice alternative to 'recursive ls' ...
+
+TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n'
+HISTIGNORE="&:bg:fg:ll:h"
+HISTTIMEFORMAT="$(echo -e ${BCyan})[%d/%m %H:%M:%S]$(echo -e ${NC}) "
+HOSTFILE=$HOME/.hosts    # Put a list of remote hosts in ~/.hosts
+HISTCONTROL=ignoreboth:erasedups
+shopt -s histappend
+HISTSIZE=150
+HISTFILESIZE=2000
+shopt -s checkwinsize
+
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
+bind '"\eOA": history-search-backward'
+bind '"\eOB": history-search-forward'
+
+#  Copyright Mike Stewart - http://MediaDoneRight.com
+#  Modified by cynesiz and redundant commenting removed.
+Color_Off="\[\033[0m\]"       
+# Regular Colors
+Black="\[\033[0;30m\]"       
+Red="\[\033[0;31m\]"          
+Green="\[\033[0;32m\]"        
+Yellow="\[\033[0;33m\]"      
+Blue="\[\033[0;34m\]"         
+Purple="\[\033[0;35m\]"      
+Cyan="\[\033[0;36m\]"         
+White="\[\033[0;37m\]"        
+Orange="\[\033[0;40m\]"        
 # Bold
-BBlack='\e[1;30m'       # Black
-BRed='\e[1;31m'         # Red
-BGreen='\e[1;32m'       # Green
-BYellow='\e[1;33m'      # Yellow
-BBlue='\e[1;34m'        # Blue
-BPurple='\e[1;35m'      # Purple
-BCyan='\e[1;36m'        # Cyan
-BWhite='\e[1;37m'       # White
-
+BBlack="\[\033[1;30m\]"       
+BRed="\[\033[1;31m\]"         
+BGreen="\[\033[1;32m\]"       
+BYellow="\[\033[1;33m\]"    
+BBlue="\[\033[1;34m\]"       
+BPurple="\[\033[1;35m\]"      
+BCyan="\[\033[1;36m\]"        
+BWhite="\[\033[1;37m\]"       
+BOrange="\[\033[1;40m\]"       
+# Underline
+UBlack="\[\033[4;30m\]"       # Black
+URed="\[\033[4;31m\]"         # Red
+UGreen="\[\033[4;32m\]"       # Green
+UYellow="\[\033[4;33m\]"      # Yellow
+UBlue="\[\033[4;34m\]"        # Blue
+UPurple="\[\033[4;35m\]"      # Purple
+UCyan="\[\033[4;36m\]"        # Cyan
+UWhite="\[\033[4;37m\]"       # White
+UOrange="\[\033[4;40m\]"  
 # Background
-On_Black='\e[40m'       # Black
-On_Red='\e[41m'         # Red
-On_Green='\e[42m'       # Green
-On_Yellow='\e[43m'      # Yellow
-On_Blue='\e[44m'        # Blue
-On_Purple='\e[45m'      # Purple
-On_Cyan='\e[46m'        # Cyan
-On_White='\e[47m'       # White
-
+On_Black="\[\033[40m\]"       # Black
+On_Red="\[\033[41m\]"         # Red
+On_Green="\[\033[42m\]"       # Green
+On_Yellow="\[\033[43m\]"      # Yellow
+On_Blue="\[\033[44m\]"        # Blue
+On_Purple="\[\033[45m\]"      # Purple
+On_Cyan="\[\033[46m\]"        # Cyan
+On_White="\[\033[47m\]"       # White
+# High Intensty
+IBlack="\[\033[0;90m\]"       # Black
+IRed="\[\033[0;91m\]"         # Red
+IGreen="\[\033[0;92m\]"       # Green
+IYellow="\[\033[0;93m\]"      # Yellow
+IBlue="\[\033[0;94m\]"        # Blue
+IPurple="\[\033[0;95m\]"      # Purple
+ICyan="\[\033[0;96m\]"        # Cyan
+IWhite="\[\033[0;97m\]"       # White
+# Bold High Intensty
+BIBlack="\[\033[1;90m\]"      # Black
+BIRed="\[\033[1;91m\]"        # Red
+BIGreen="\[\033[1;92m\]"      # Green
+BIYellow="\[\033[1;93m\]"     # Yellow
+BIBlue="\[\033[1;94m\]"       # Blue
+BIPurple="\[\033[1;95m\]"     # Purple
+BICyan="\[\033[1;96m\]"       # Cyan
+BIWhite="\[\033[1;97m\]"      # White
+# High Intensty backgrounds
+On_IBlack="\[\033[0;100m\]"   # Black
+On_IRed="\[\033[0;101m\]"     # Red
+On_IGreen="\[\033[0;102m\]"   # Green
+On_IYellow="\[\033[0;103m\]"  # Yellow
+On_IBlue="\[\033[0;104m\]"    # Blue
+On_IPurple="\[\033[10;95m\]"  # Purple
+On_ICyan="\[\033[0;106m\]"    # Cyan
+On_IWhite="\[\033[0;107m\]"   # White
+# Various variables you might want for your PS1 prompt instead
+Time12h="\T"
+Time12a="\@"
+PathShort="\w"
+PathFull="\W"
+NewLine="\n"
+Jobs="\j"
 NC="\e[m"               # Color Reset
-
 ALERT=${BWhite}${On_Red} # Bold White on red background
 
-echo -e "${BCyan}This is BASH ${BRed}${BASH_VERSION%.*}${BCyan}\
-- DISPLAY on ${BRed}$DISPLAY${NC}\n"
+echo -e "${BCyan}This is BASH ${BRed}${BASH_VERSION%.*}${BCyan} - ${BRed}$(hostname --fqdn)${NC}\n"
 date
-if [ -x /usr/games/fortune ]; then
-    /usr/games/fortune -s     # Makes our day a bit more fun.... :-)
-fi
 
 function _exit()              # Function to run upon exit of shell.
 {
     echo -e "${BRed}Exiting...${NC}"
 }
 trap _exit EXIT
-
-#
-# Bash Colorgrid
-# Credits to Plasmarob on StackExchange
-# http://unix.stackexchange.com/users/172429/plasmarob
-#
-
-function colorgrid( )
-{
-    iter=16
-    while [ $iter -lt 52 ]
-    do
-        second=$[$iter+36]
-        third=$[$second+36]
-        four=$[$third+36]
-        five=$[$four+36]
-        six=$[$five+36]
-        seven=$[$six+36]
-        if [ $seven -gt 250 ];then seven=$[$seven-251]; fi
-
-        echo -en "\033[38;5;$(echo $iter)m█ "
-        printf "%03d" $iter
-        echo -en "   \033[38;5;$(echo $second)m█ "
-        printf "%03d" $second
-        echo -en "   \033[38;5;$(echo $third)m█ "
-        printf "%03d" $third
-        echo -en "   \033[38;5;$(echo $four)m█ "
-        printf "%03d" $four
-        echo -en "   \033[38;5;$(echo $five)m█ "
-        printf "%03d" $five
-        echo -en "   \033[38;5;$(echo $six)m█ "
-        printf "%03d" $six
-        echo -en "   \033[38;5;$(echo $seven)m█ "
-        printf "%03d" $seven
-
-        iter=$[$iter+1]
-        printf '\r\n'
-    done
-}
-
-#-------------------------------------------------------------
-# Shell Prompt - for many examples, see:
-#       http://www.debian-administration.org/articles/205
-#       http://www.askapache.com/linux/bash-power-prompt.html
-#       http://tldp.org/HOWTO/Bash-Prompt-HOWTO
-#       https://github.com/nojhan/liquidprompt
-#-------------------------------------------------------------
-# Current Format: [TIME USER@HOST PWD] >
-# TIME:
-#    Green     == machine load is low
-#    Orange    == machine load is medium
-#    Red       == machine load is high
-#    ALERT     == machine load is very high
-# USER:
-#    Cyan      == normal user
-#    Orange    == SU to user
-#    Red       == root
-# HOST:
-#    Cyan      == local session
-#    Green     == secured remote connection (via ssh)
-#    Red       == unsecured remote connection
-# PWD:
-#    Green     == more than 10% free disk space
-#    Orange    == less than 10% free disk space
-#    ALERT     == less than 5% free disk space
-#    Red       == current user does not have write privileges
-#    Cyan      == current filesystem is size zero (like /proc)
-# >:
-#    White     == no background or suspended jobs in this shell
-#    Cyan      == at least one background job in this shell
-#    Orange    == at least one suspended job in this shell
-#
-#    Command is added to the history file each time you hit enter,
-#    so it's available to all shells (using 'history -a').
-
 
 # Test connection type:
 if [ -n "${SSH_CONNECTION}" ]; then
@@ -392,8 +202,6 @@ elif [[ "${DISPLAY%%:0*}" != "" ]]; then
 else
     CNX=${BCyan}        # Connected on local machine.
 fi
-
-# Test user type:
 if [[ ${USER} == "root" ]]; then
     SU=${Red}           # User is root.
 elif [[ ${USER} != $(logname) ]]; then
@@ -401,7 +209,6 @@ elif [[ ${USER} != $(logname) ]]; then
 else
     SU=${BCyan}         # User is normal (well ... most of us are).
 fi
-
 
 
 NCPU=$(grep -c 'processor' /proc/cpuinfo)    # Number of CPUs
@@ -590,19 +397,6 @@ done
 cd $ups
 }
 
-#netinfo - shows network information for your system
-netinfo ()
-{
-echo "--------------- Network Information ---------------"
-/sbin/ifconfig | awk /'inet addr/ {print $2}'
-/sbin/ifconfig | awk /'Bcast/ {print $3}'
-/sbin/ifconfig | awk /'inet addr/ {print $4}'
-/sbin/ifconfig | awk /'HWaddr/ {print $4,$5}'
-myip=`lynx -dump -hiddenlinks=ignore -nolist http://checkip.dyndns.org:8245/ | sed '/^$/d; s/^[ ]*//g; s/[ ]*$//g' `
-echo "${myip}"
-echo "---------------------------------------------------"
-}
-
 #dirsize - finds directory sizes and lists them for the current directory
 dirsize ()
 {
@@ -611,6 +405,126 @@ egrep '^ *[0-9.]*[MG]' | sort -n > /tmp/list
 egrep '^ *[0-9.]*M' /tmp/list
 egrep '^ *[0-9.]*G' /tmp/list
 rm -rf /tmp/list
+}
+
+# Copyright Jintin - https://github.com/Jintin/aliasme
+# added to auto create directory -cyn
+if [[ ! -e ~/.aliasme ]]; then
+    mkdir -p ~/.aliasme
+    echo "Created directory ~/.aliasme"
+fi
+_list() {
+	while read name
+	do
+		read value
+		echo "$name : $value"
+	done < ~/.aliasme/list
+}
+_add() {
+	#read name
+	name=$1
+	if [ -z $1 ]; then
+		read -ep "Input name to add:" name
+	fi
+
+	#read path
+	path_alias=$2
+	if [ -z $2 ]; then
+		read -ep "Input path to add:" path_alias
+	fi
+	path_alias=$(cd $path_alias;pwd)
+
+	echo $name >> ~/.aliasme/list
+	echo $path_alias >> ~/.aliasme/list
+
+	_autocomplete
+}
+_remove() {
+	#read name
+	name=$1
+	if [ -z $1 ]; then
+		read -pr "Input name to remove:" name
+	fi
+	touch ~/.aliasme/listtemp
+	# read and replace file
+	while read line
+	do
+		if [ $line = $name ]; then
+			read line #skip one more line
+		else
+			echo $line >> ~/.aliasme/listtemp
+		fi
+	done < ~/.aliasme/list
+	mv ~/.aliasme/listtemp ~/.aliasme/list
+	_autocomplete
+}
+_jump() {
+	while read line
+	do
+		if [ $1 = $line ]; then
+			read line
+			cd $line
+			return
+		fi
+	done < ~/.aliasme/list
+	echo "not found"
+}
+_bashauto()
+{
+	local cur prev opts
+	COMPREPLY=()
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+	opts=""
+	while read line
+	do
+		opts+=" $line"
+		read line
+	done < ~/.aliasme/list
+	COMPREPLY=( $(compgen -W "${opts}" ${cur}) )
+	return 0
+}
+_autocomplete()
+{
+	if [ $ZSH_VERSION ]; then
+		# zsh
+		opts=""
+		while read line
+		do
+			opts+="$line "
+			read line
+		done < ~/.aliasme/list
+		compctl -k "($opts)" al
+	else
+		# bash
+		complete -F _bashauto al
+	fi
+}
+_autocomplete
+al(){
+	if [ ! -z $1 ]; then
+		if [ $1 = "ls" ]; then
+			_list
+		elif [ $1 = "add" ]; then
+			_add $2 $3
+		elif [ $1 = "rm" ]; then
+			_remove $2
+		elif [ $1 = "-h" ]; then
+			echo "Usage:"
+			echo "al add [name] [value]        # add alias with name and value"
+			echo "al rm [name]                 # remove alias by name"
+			echo "al ls                        # alias list"
+			echo "al [name]                    # execute alias associate with [name]"
+			echo "al -v                        # version information"
+			echo "al -h                        # help"
+		elif [ $1 = "-v" ]; then
+			echo "aliasme 1.1.2"
+			echo "visit https://github.com/Jintin/aliasme for more information"
+		else
+			_jump $1
+		fi
+	fi
 }
 
 
