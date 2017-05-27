@@ -205,7 +205,10 @@ else
     OS=$(uname -s)
     VER=$(uname -r)
 fi
-
+echo -e "${BCyan}This is ${OS} ${BRed}${VER}${BCyan}\
+-  on ${BRed}$(hostname --fqdn)${NC}\n"
+date
+echo
 function _exit()              # Function to run upon exit of shell.
 {
     echo -e "${BRed}Exiting...${NC}"
@@ -235,9 +238,6 @@ function aa_prompt_defaults ()
 #PS1="\n\[\e[1;30m\][$$:$PPID - \j:\!\[\e[1;30m\]]\[\e[0;36m\] \T \[\e[1;30m\][\[\e[1;34m\]\u@\H\[\e[1;30m\]:\[\e[0;37m\]${SSH_TTY:-o} \[\e[0;32m\]+${SHLVL}\[\e[1;30m\]] \[\e[1;37m\]\w\[\e[0;37m\] \n\$ "
 
 PS1="\n\[\e[1;30m\][\T]\[\e[1;30m\][\[\e[1;34m\]\u@\H\[\e[1;30m\]:\[\e[0;37m\]${SSH_TTY:-o} \[\e[0;32m\]+${SHLVL}\[\e[1;30m\]] \[\e[1;37m\]\w\[\e[0;37m\] \n\$ "
-
-echo -e "${BCyan}This is BASH ${BRed}${BASH_VERSION%.*}${BCyan}"
-echo -e date
 
 
 
