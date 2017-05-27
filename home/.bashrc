@@ -221,7 +221,7 @@ function aa_prompt_defaults ()
 
 #PS1="\n\[\e[1;30m\][$$:$PPID - \j:\!\[\e[1;30m\]]\[\e[0;36m\] \T \[\e[1;30m\][\[\e[1;34m\]\u@\H\[\e[1;30m\]:\[\e[0;37m\]${SSH_TTY:-o} \[\e[0;32m\]+${SHLVL}\[\e[1;30m\]] \[\e[1;37m\]\w\[\e[0;37m\] \n\$ "
 
-PS1="\n${BOrange}[ ] [${BRed}\u@\H${BOrange}:${$BWhite}${SSH_TTY:-o} ${BGreen}+${SHLVL}${BOrange}] ${BWhite}\w${NC} \n\$ "
+PS1="\n\[\033[1;40m\][\T] [\[\033[1;31m\]\u@\H\[\033[0;40m\]:\[\033[1;37m\]{SSH_TTY:-o} \[\033[1;32m\]+${SHLVL}] \[\033[1;37m\]\w${NC} \n\$ "
 
 
 
