@@ -98,6 +98,24 @@ bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
 bind '"\eOA": history-search-backward'
 bind '"\eOB": history-search-forward'
+
+
+alias more='less'
+export PAGER=less
+export LESSCHARSET='latin1'
+export LESSOPEN='|/usr/bin/lesspipe.sh %s 2>&-'
+                # Use this if lesspipe.sh exists.
+export LESS='-i -N -w  -z-4 -g -e -M -X -F -R -P%t?f%f \
+:stdin .?pb%pb\%:?lbLine %lb:?bbByte %bb:-...'
+# LESS man page colors (makes Man pages more readable).
+export LESS_TERMCAP_mb=$'\E[01;31m'
+export LESS_TERMCAP_md=$'\E[01;31m'
+export LESS_TERMCAP_me=$'\E[0m'
+export LESS_TERMCAP_se=$'\E[0m'
+export LESS_TERMCAP_so=$'\E[01;44;33m'
+export LESS_TERMCAP_ue=$'\E[0m'
+export LESS_TERMCAP_us=$'\E[01;32m'
+
 #  Copyright Mike Stewart - http://MediaDoneRight.com
 #  Modified by cynesiz and redundant commenting removed.
 Color_Off="\[\033[0m\]"       
@@ -109,8 +127,7 @@ Yellow="\[\033[0;33m\]"
 Blue="\[\033[0;34m\]"         
 Purple="\[\033[0;35m\]"      
 Cyan="\[\033[0;36m\]"         
-White="\[\033[0;37m\]"        
-Orange="\[\033[0;40m\]"        
+White="\[\033[0;37m\]"               
 # Bold
 BBlack="\[\033[1;30m\]"       
 BRed="\[\033[1;31m\]"         
@@ -119,8 +136,7 @@ BYellow="\[\033[1;33m\]"
 BBlue="\[\033[1;34m\]"       
 BPurple="\[\033[1;35m\]"      
 BCyan="\[\033[1;36m\]"        
-BWhite="\[\033[1;37m\]"       
-BOrange="\[\033[1;40m\]"       
+BWhite="\[\033[1;37m\]"             
 # Underline
 UBlack="\[\033[4;30m\]"       # Black
 URed="\[\033[4;31m\]"         # Red
@@ -190,9 +206,6 @@ else
     VER=$(uname -r)
 fi
 
-echo -e "${Orange}${OS} ${Red}${KARCH} ${Orange} on ${BIRed}\H${NC}"
-echo -e date
-
 function _exit()              # Function to run upon exit of shell.
 {
     echo -e "${BRed}Exiting...${NC}"
@@ -221,25 +234,10 @@ function aa_prompt_defaults ()
 
 #PS1="\n\[\e[1;30m\][$$:$PPID - \j:\!\[\e[1;30m\]]\[\e[0;36m\] \T \[\e[1;30m\][\[\e[1;34m\]\u@\H\[\e[1;30m\]:\[\e[0;37m\]${SSH_TTY:-o} \[\e[0;32m\]+${SHLVL}\[\e[1;30m\]] \[\e[1;37m\]\w\[\e[0;37m\] \n\$ "
 
-PS1="\n\[\033[1;40m\][\T] [\[\033[1;31m\]\u@\H\[\033[0;40m\]:\[\033[1;37m\]{SSH_TTY:-o} \[\033[1;32m\]+${SHLVL}] \[\033[1;37m\]\w${NC} \n\$ "
+PS1="\n\[\e[1;30m\][\T]\[\e[1;30m\][\[\e[1;34m\]\u@\H\[\e[1;30m\]:\[\e[0;37m\]${SSH_TTY:-o} \[\e[0;32m\]+${SHLVL}\[\e[1;30m\]] \[\e[1;37m\]\w\[\e[0;37m\] \n\$ "
 
-
-
-alias more='less'
-export PAGER=less
-export LESSCHARSET='latin1'
-export LESSOPEN='|/usr/bin/lesspipe.sh %s 2>&-'
-                # Use this if lesspipe.sh exists.
-export LESS='-i -N -w  -z-4 -g -e -M -X -F -R -P%t?f%f \
-:stdin .?pb%pb\%:?lbLine %lb:?bbByte %bb:-...'
-# LESS man page colors (makes Man pages more readable).
-export LESS_TERMCAP_mb=$'\E[01;31m'
-export LESS_TERMCAP_md=$'\E[01;31m'
-export LESS_TERMCAP_me=$'\E[0m'
-export LESS_TERMCAP_se=$'\E[0m'
-export LESS_TERMCAP_so=$'\E[01;44;33m'
-export LESS_TERMCAP_ue=$'\E[0m'
-export LESS_TERMCAP_us=$'\E[01;32m'
+echo -e "${BCyan}This is BASH ${BRed}${BASH_VERSION%.*}${BCyan}"
+echo -e date
 
 
 
