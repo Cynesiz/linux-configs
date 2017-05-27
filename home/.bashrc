@@ -2,41 +2,6 @@ case $- in
     *i*) ;;
       *) return;;
 esac
-export LANG=en_US.UTF-8
-if [ -f /etc/bashrc ]; then
-      . /etc/bashrc   # --> Read /etc/bashrc, if present.
-fi
-if [ -f ~/.bashrcext ]; then
-      source ~/.bashrcext   # --> Read if present.
-fi
-
-alias debug="set -o nounset; set -o xtrace"
-ulimit -S -c 0      # Don't want coredumps.
-set -o notify
-set -o noclobber
-set -o ignoreeof
-
-shopt -s cdspell
-shopt -s cdable_vars
-shopt -s checkhash
-shopt -s checkwinsize
-shopt -s sourcepath
-shopt -s no_empty_cmd_completion
-shopt -s cmdhist
-shopt -s histappend histreedit histverify
-shopt -s extglob       # Necessary for programmable completion.
-
-# Disable options:
-shopt -u mailwarn
-unset MAILCHECK        # Don't want my shell to warn me of incoming mail.
-
-function cd() {
-    new_directory="$*";
-    if [ $# -eq 0 ]; then 
-        new_directory=${HOME};
-    fi;
-    builtin cd "${new_directory}" && ls -lah
-}
 alias home='cd ~'
 alias cb='cd ..'
 alias rm='rm -rf'
@@ -47,15 +12,6 @@ alias calc="expr"
 alias path='echo -e ${PATH//:/\\n}'
 alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
 alias myip='curl http://api.ipify.org && printf "%b" "\n\n"'
-
-function trout() {
-    options="$*";
-    if [ $# -eq 0 ]; then 
-        options='--help';
-    fi;
-    builtin traceroute "${options}" '-w 3 -q 1 -N 32';
-}
-
 alias netall='ss -natup'
 alias netin='ss -pultan'
 alias netudp='ss -nap -A udp'
@@ -90,7 +46,45 @@ alias lm='ll |more'        #  Pipe through 'more'
 alias lr='ll -R'           #  Recursive ls.
 alias la='ll -A'           #  Show hidden files.
 alias tree='tree -Csuh'    #  Nice alternative to 'recursive ls' ...
+alias debug="set -o nounset; set -o xtrace"
 
+function cd() {
+    new_directory="$*";
+    if [ $# -eq 0 ]; then 
+        new_directory=${HOME};
+    fi;
+    builtin cd "${new_directory}" && ls -lah
+}
+function trout() {
+    options="$*";
+    if [ $# -eq 0 ]; then 
+        options='--help';
+    fi;
+    builtin traceroute "${options}" '-w 3 -q 1 -N 32';
+}
+
+ulimit -S -c 0      # Don't want coredumps.
+set -o notify
+set -o noclobber
+set -o ignoreeof
+export LANG=en_US.UTF-8
+if [ -f /etc/bashrc ]; then
+      . /etc/bashrc   # --> Read /etc/bashrc, if present.
+fi
+if [ -f ~/.bashrcext ]; then
+      source ~/.bashrcext   # --> Read if present.
+fi
+shopt -s cdspell
+shopt -s cdable_vars
+shopt -s checkhash
+shopt -s checkwinsize
+shopt -s sourcepath
+shopt -s no_empty_cmd_completion
+shopt -s cmdhist
+shopt -s histappend histreedit histverify
+shopt -s extglob       # Necessary for programmable completion.
+shopt -u mailwarn
+unset MAILCHECK        # Don't want my shell to warn me of incoming mail.
 TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n'
 HISTIGNORE="&:bg:fg:ll:h"
 HISTTIMEFORMAT="$(echo -e ${BCyan})[%d/%m %H:%M:%S]$(echo -e ${NC}) "
@@ -100,12 +94,10 @@ shopt -s histappend
 HISTSIZE=150
 HISTFILESIZE=2000
 shopt -s checkwinsize
-
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
 bind '"\eOA": history-search-backward'
 bind '"\eOB": history-search-forward'
-
 #  Copyright Mike Stewart - http://MediaDoneRight.com
 #  Modified by cynesiz and redundant commenting removed.
 Color_Off="\[\033[0m\]"       
@@ -185,116 +177,27 @@ Jobs="\j"
 NC="\e[m"               # Color Reset
 ALERT=${BWhite}${On_Red} # Bold White on red background
 
-echo -e "${BCyan}This is BASH ${BRed}${BASH_VERSION%.*}${BCyan} - ${BRed}$(hostname --fqdn)${NC}\n"
-date
+KARCH=$(uname -r)
+if [ -f /etc/debian_version ]; then
+    OS="Debian GNU/Linux"  # XXX or Ubuntu??
+    VER=$(cat /etc/debian_version)
+elif [ -f /etc/lsb-release ]; then
+    . /etc/lsb-release
+    OS=$DISTRIB_ID
+    VER=$DISTRIB_RELEASE
+else
+    OS=$(uname -s)
+    VER=$(uname -r)
+fi
+
+echo -e "${Orange}${OS} ${Red}${KARCH} ${Orange} on ${BIRed}\H${NC}"
+echo -e date
 
 function _exit()              # Function to run upon exit of shell.
 {
     echo -e "${BRed}Exiting...${NC}"
 }
 trap _exit EXIT
-
-# Test connection type:
-if [ -n "${SSH_CONNECTION}" ]; then
-    CNX=${Green}        # Connected on remote machine, via ssh (good).
-elif [[ "${DISPLAY%%:0*}" != "" ]]; then
-    CNX=${ALERT}        # Connected on remote machine, not via ssh (bad).
-else
-    CNX=${BCyan}        # Connected on local machine.
-fi
-if [[ ${USER} == "root" ]]; then
-    SU=${Red}           # User is root.
-elif [[ ${USER} != $(logname) ]]; then
-    SU=${BRed}          # User is not login user.
-else
-    SU=${BCyan}         # User is normal (well ... most of us are).
-fi
-
-
-NCPU=$(grep -c 'processor' /proc/cpuinfo)    # Number of CPUs
-SLOAD=$(( 100*${NCPU} ))        # Small load
-MLOAD=$(( 200*${NCPU} ))        # Medium load
-XLOAD=$(( 400*${NCPU} ))        # Xlarge load
-
-# Returns system load as percentage, i.e., '40' rather than '0.40)'.
-function load()
-{
-    local SYSLOAD=$(cut -d " " -f1 /proc/loadavg | tr -d '.')
-    # System load of the current host.
-    echo $((10#$SYSLOAD))       # Convert to decimal.
-}
-
-# Returns a color indicating system load.
-function load_color()
-{
-    local SYSLOAD=$(load)
-    if [ ${SYSLOAD} -gt ${XLOAD} ]; then
-        echo -en ${ALERT}
-    elif [ ${SYSLOAD} -gt ${MLOAD} ]; then
-        echo -en ${Red}
-    elif [ ${SYSLOAD} -gt ${SLOAD} ]; then
-        echo -en ${BRed}
-    else
-        echo -en ${Green}
-    fi
-}
-
-# Returns a color according to free disk space in $PWD.
-function disk_color()
-{
-    if [ ! -w "${PWD}" ] ; then
-        echo -en ${Red}
-        # No 'write' privilege in the current directory.
-    elif [ -s "${PWD}" ] ; then
-        local used=$(command df -P "$PWD" |
-                   awk 'END {print $5} {sub(/%/,"")}')
-        if [ ${used} -gt 95 ]; then
-            echo -en ${ALERT}           # Disk almost full (>95%).
-        elif [ ${used} -gt 90 ]; then
-            echo -en ${BRed}            # Free disk space almost gone.
-        else
-            echo -en ${Green}           # Free disk space is ok.
-        fi
-    else
-        echo -en ${Cyan}
-        # Current directory is size '0' (like /proc, /sys etc).
-    fi
-}
-
-# Returns a color according to running/suspended jobs.
-function job_color()
-{
-    if [ $(jobs -s | wc -l) -gt "0" ]; then
-        echo -en ${BRed}
-    elif [ $(jobs -r | wc -l) -gt "0" ] ; then
-        echo -en ${BCyan}
-    fi
-}
-
-# Adds some text in the terminal frame (if applicable).
-
-
-# Now we construct the prompt.
-# PROMPT_COMMAND="history -a"
-# case ${TERM} in
-#  *term | rxvt | linux)
-#        PS1="\[\$(load_color)\][\A\[${NC}\] "
-#        # Time of day (with load info):
-#        PS1="\[\$(load_color)\][\A\[${NC}\] "
-#        # User@Host (with connection type info):
-#        PS1=${PS1}"\[${SU}\]\u\[${NC}\]@\[${CNX}\]\h\[${NC}\] "
-#        # PWD (with 'disk space' info):
-#        PS1=${PS1}"\[\$(disk_color)\]\W]\[${NC}\] "
-#        # Prompt (with 'job' info):
-#        PS1=${PS1}"\[\$(job_color)\]>\[${NC}\] "
-#        # Set title of current xterm:
-#        PS1=${PS1}"\[\e]0;[\u@\h] \w\a\]"
-#        ;;
-#    *)
-#        PS1="(\A \u@\h \W) > " # --> PS1="(\A \u@\h \w) > "
-#                               # --> Shows full pathname of current dir.
-#        ;;
-# esac
 
 function aa_prompt_defaults ()
 {
@@ -316,15 +219,11 @@ function aa_prompt_defaults ()
    export PS1 AA_P PROMPT_COMMAND SSH_TTY
 }
 
-PS1="\n\[\e[1;30m\][$$:$PPID - \j:\!\[\e[1;30m\]]\[\e[0;36m\] \T \[\e[1;30m\][\[\e[1;34m\]\u@\H\[\e[1;30m\]:\[\e[0;37m\]${SSH_TTY:-o} \[\e[0;32m\]+${SHLVL}\[\e[1;30m\]] \[\e[1;37m\]\w\[\e[0;37m\] \n\$ "
+#PS1="\n\[\e[1;30m\][$$:$PPID - \j:\!\[\e[1;30m\]]\[\e[0;36m\] \T \[\e[1;30m\][\[\e[1;34m\]\u@\H\[\e[1;30m\]:\[\e[0;37m\]${SSH_TTY:-o} \[\e[0;32m\]+${SHLVL}\[\e[1;30m\]] \[\e[1;37m\]\w\[\e[0;37m\] \n\$ "
+
+PS1="\n${BOrange}[ ] [{$BSBlue}\u@\H${BOrange}:${$BWhite}${SSH_TTY:-o} ${BGreen}+${SHLVL}${BOrange}] ${BWhite}\w${NC} \n\$ "
 
 
-
-
-
-#-------------------------------------------------------------
-# Tailoring 'less'
-#-------------------------------------------------------------
 
 alias more='less'
 export PAGER=less
@@ -333,7 +232,6 @@ export LESSOPEN='|/usr/bin/lesspipe.sh %s 2>&-'
                 # Use this if lesspipe.sh exists.
 export LESS='-i -N -w  -z-4 -g -e -M -X -F -R -P%t?f%f \
 :stdin .?pb%pb\%:?lbLine %lb:?bbByte %bb:-...'
-
 # LESS man page colors (makes Man pages more readable).
 export LESS_TERMCAP_mb=$'\E[01;31m'
 export LESS_TERMCAP_md=$'\E[01;31m'
@@ -345,15 +243,10 @@ export LESS_TERMCAP_us=$'\E[01;32m'
 
 
 
-#------------------------------------------------------------------------
-# Other Useful Functions
-#------------------------------------------------------------------------
-
 function cdroot()
 {
   while [[ $PWD != '/' && ${PWD##*/} != 'httpdocs' ]]; do cd ..; done
 }
-
 upto ()
 {
     if [ -z "$1" ]; then
@@ -362,7 +255,6 @@ upto ()
     local upto=$1
     cd "${PWD/\/$upto\/*//$upto}"
 }
-
 _upto()
 {
     local cur=${COMP_WORDS[COMP_CWORD]}
@@ -370,7 +262,6 @@ _upto()
     COMPREPLY=( $( compgen -W "$d" -- "$cur" ) )
 }
 complete -F _upto upto
-
 jd(){
     if [ -z "$1" ]; then
         echo "Usage: jd [directory]";
@@ -379,15 +270,10 @@ jd(){
         cd **"/$1"
     fi
 }
-
-
-# make a directory and cd to it
 mcd()
 {
     test -d "$1" || mkdir "$1" && cd "$1"
-}
-
-# (c) 2007 stefan w. GPLv3          
+}         
 function up {
 ups=""
 for i in $(seq 1 $1)
@@ -396,8 +282,6 @@ do
 done
 cd $ups
 }
-
-#dirsize - finds directory sizes and lists them for the current directory
 dirsize ()
 {
 du -shx * .[a-zA-Z0-9_]* 2> /dev/null | \
